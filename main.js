@@ -107,18 +107,7 @@ function doPost(e) {
     messages.push(template);
 
     // メッセージを返信
-    UrlFetchApp.fetch(line_endpoint, {
-        validateHttpsCertificates: false,
-        'headers': {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ' + CHANNEL_ACCESS_TOKEN,
-        },
-        'method': 'post',
-        'payload': JSON.stringify({
-            'replyToken': replyToken,
-            'messages': messages,
-        }),
-    });
+    sendReplyMessages(replyToken, messages);
 
     } catch (error) {
         //ユーザーのシートを手に入れる
