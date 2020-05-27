@@ -6,6 +6,7 @@ var line_endpoint = 'https://api.line.me/v2/bot/message/reply';
 //ポストで送られてくるので、ポストデータ取得
 //JSONをパースする
 function doPost(e) {
+  try {
     var json = JSON.parse(e.postData.contents);
 
     //返信するためのトークン取得
@@ -37,7 +38,7 @@ function doPost(e) {
     var isHelpCommand = HELP_COMMNAD_LIST.includes(splitMessage[0]);
 
 
-    try {
+    
     //返信メッセージを決める
     var replyMessages;
     if (!isExistSheet(userId)) {
@@ -58,19 +59,13 @@ function doPost(e) {
 
     //文字が配列になっているのを整える
     var messages = replyMessages.map(message => stringToMessage(message));
-
     // メッセージを返信
     sendReplyMessages(replyToken, messages);
 
-    } catch (error) {
-        //ユーザーのシートを手に入れる
-        var SpreadSheet = getSpreadSheet(userId);
-        // これで１枚のシートを取得
-        var dataSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
-        //現在の状態を知る
-        dataSheet.getRange('L1').setValue(error);
-
-    }
-    return ContentService.createTextOutput(JSON.stringify({ 'content': 'post ok' })).setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    //ログをフォルダに保存
+    makeLog(error);
+  }
+  return ContentService.createTextOutput(JSON.stringify({ 'content': 'post ok' })).setMimeType(ContentService.MimeType.JSON);
 }
 
