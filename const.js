@@ -13,4 +13,5 @@ const RESET_COMMNAD_LIST = ['リセット', 'りせっと', 'reset', 'Reset'];
 const STATUS_COMMNAD_LIST = ['ステータス', 'すてーたす', 'status', 'Status'];
 const START_COMMNAD_LIST = ['スタート', 'すたーと', 'start', 'Start'];
 const NEXT_COMMNAD_LIST = ['次へ'];
+const HELP_COMMNAD_LIST = ['ヘルプ'];
 const GOAL_PLACE_NUMBER = 10;
