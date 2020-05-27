@@ -56,15 +56,8 @@ function doPost(e) {
         template = getNextTemplate();
     }
 
-
-
     //文字が配列になっているのを整える
-    var messages = replyMessages.map(function (message) {
-        return {
-            "type": "text",
-            "text": message
-        }
-    });
+    var messages = replyMessages.map(message => stringToMessage(message));
 
     // メッセージを返信
     sendReplyMessages(replyToken, messages);
@@ -81,22 +74,3 @@ function doPost(e) {
     return ContentService.createTextOutput(JSON.stringify({ 'content': 'post ok' })).setMimeType(ContentService.MimeType.JSON);
 }
 
-/**
- * LINEアカウントに返信の形でメッセージを返す
- * @param {Object[]} messages 送りたいメッセージの内容。5つまでのリスト。
- */
-function sendReplyMessages(replyToken, messages) {
-    var line_endpoint = 'https://api.line.me/v2/bot/message/reply';
-    UrlFetchApp.fetch(line_endpoint, {
-        validateHttpsCertificates: false,
-        'headers': {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ' + CHANNEL_ACCESS_TOKEN,
-        },
-        'method': 'post',
-        'payload': JSON.stringify({
-            'replyToken': replyToken,
-            'messages': messages,
-        }),
-    });
-}
