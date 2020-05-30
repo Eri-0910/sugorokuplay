@@ -34,7 +34,7 @@ function doPost(e) {
             //リセットする
             var resetMessage = resetAction(userId);
             //リセットしたメッセージを追加
-            replyMessages.push(resetMessage);
+            replyMessages.concat(resetMessage);
         } else if (hasNextMessage(userId)){
             if (isCommand.isNext) {
                 //続きのメッセージがある
@@ -50,6 +50,7 @@ function doPost(e) {
     } else if (isCommand.isStart){
         //未開始で開始コマンド
         replyMessages = ['ゲームを開始します。'];
+        gameStart(userId);
     } else if (isCommand.isHelp){
         //ゲーム未開始時点のヘルプ
         replyMessages = ['「スタート」と送ると、ゲームを開始します。それ以外のコマンドは、ゲーム開始後にヘルプをご覧ください。'];
