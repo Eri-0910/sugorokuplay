@@ -7,6 +7,7 @@
 /// <reference path="status.ts"/>
 /// <reference path="log.ts"/>
 /// <reference path="const.ts"/>
+/// <reference path="start.ts"/>
 //CHANNEL_ACCESS_TOKENを設定
 var line_endpoint = 'https://api.line.me/v2/bot/message/reply';
 
@@ -32,40 +33,10 @@ function doPost(e) {
     var splitMessage = userMessage.split(/\s/, 3);
 
     //なんのコマンドかを表したオブジェクト
-    var isCommand = commandParser(splitMessage[0]);
+    var isCommand: CommandObj = commandParser(splitMessage[0]);
 
-    //返信メッセージを決める
-    var replyMessages: String[];
-    if (isExistSheet(userId)) {
-        if (isCommand.isReset) {
-            //ゲームは開始されていて、リセットがしたい
-            replyMessages = ['ゲームをリセットします'];
-            //リセットする
-            var resetMessage = resetAction(userId);
-            //リセットしたメッセージを追加
-            replyMessages.concat(resetMessage);
-        } else if (hasNextMessage(userId)){
-            if (isCommand.isNext) {
-                //続きのメッセージがある
-                replyMessages = ['続きの文章です'];
-            }else{
-                //続きのメッセージがあるが取得しようとしていない
-                replyMessages = ['続きの文章があります', '続きの文章です'];
-            }
-        }else{
-            //ゲームは開始されている
-            replyMessages = ['ゲームアクションを実行します'];
-        }
-    } else if (isCommand.isStart){
-        //未開始で開始コマンド
-        replyMessages = ['ゲームを開始します。'];
-        gameStart(userId);
-    } else if (isCommand.isHelp){
-        //ゲーム未開始時点のヘルプ
-        replyMessages = ['「スタート」と送ると、ゲームを開始します。それ以外のコマンドは、ゲーム開始後にヘルプをご覧ください。'];
-    } else {//想定外の言葉が入力されたときの処理
-        replyMessages = ['ゲームが開始されていません。「スタート」と送ってください'];
-    }
+    //アクションを実行しメッセージを取得
+    var replyMessages: String[] = gameAction(userId, isCommand);
 
     //長さの設定
     if (replyMessages.length >= 5) {
@@ -87,9 +58,19 @@ function doPost(e) {
 }
 
 /**
+ * コマンドをパースした後のオブジェクト
+ */
+interface CommandObj {
+    isStart: boolean;
+    isHelp: boolean;
+    isReset: boolean;
+    isNext: boolean
+}
+
+/**
  * コマンドにパースする
  * @param {String} str 文字列
- * @returns コマンドかどうかをその内容ごとにboolにしたもの
+ * @returns {CommandObj} コマンドかどうかをその内容ごとにboolにしたもの
  */
 function commandParser(str){
     //ダイスを振るコマンドかどうか
@@ -105,11 +86,58 @@ function commandParser(str){
     //ヘルプコマンドかどうか
     var isHelpCommand = HELP_COMMNAD_LIST.includes(str);
     //返すもの
-    var isCommand = {
-        isStart: isStartCommand,
-        isHelp: isHelpCommand,
-        isReset: isResetCommand,
-        isNext: isNextCommand
+    var isCommand: CommandObj = {
+      isStart: isStartCommand,
+      isHelp: isHelpCommand,
+      isReset: isResetCommand,
+      isNext: isNextCommand,
     };
     return isCommand;
+}
+
+/**
+ * アクションを実行し、メッセージを返す
+ * @param {String} userId ユーザーID
+ * @param {CommandObj} isCommand コマンドのオブジェクト
+ * @returns {String[]} 出力すべきメッセージ
+ */
+function gameAction(userId: String, isCommand: CommandObj) {
+  //返信メッセージを決める
+  var replyMessages: String[];
+  if (isExistSheet(userId)) {
+    if (isCommand.isReset) {
+      //ゲームは開始されていて、リセットがしたい
+      replyMessages = ["ゲームをリセットします"];
+      //リセットする
+      var resetMessage = resetAction(userId);
+      //リセットしたメッセージを追加
+      replyMessages.concat(resetMessage);
+    } else if (hasNextMessage(userId)) {
+      if (isCommand.isNext) {
+        //続きのメッセージがある
+        replyMessages = ["続きの文章です"];
+      } else {
+        //続きのメッセージがあるが取得しようとしていない
+        replyMessages = ["続きの文章があります", "続きの文章です"];
+      }
+    } else {
+      //ゲームは開始されている
+      replyMessages = ["ゲームアクションを実行します"];
+    }
+  } else if (isCommand.isStart) {
+    //未開始で開始コマンド
+    replyMessages = ["ゲームを開始します。"];
+    gameStart(userId);
+  } else if (isCommand.isHelp) {
+    //ゲーム未開始時点のヘルプ
+    replyMessages = [
+      "「スタート」と送ると、ゲームを開始します。それ以外のコマンドは、ゲーム開始後にヘルプをご覧ください。",
+    ];
+  } else {
+    //想定外の言葉が入力されたときの処理
+    replyMessages = [
+      "ゲームが開始されていません。「スタート」と送ってください",
+    ];
+  }
+  return replyMessages;
 }
