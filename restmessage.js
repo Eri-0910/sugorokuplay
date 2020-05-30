@@ -46,3 +46,25 @@ function setNextMessage(userId, lst){
             dataSheet.getRange(NEXT_TEXT_COLUMN + writeRow).setValue(lst[i]);
    }
 }
+
+/**
+ * 続きのメッセージがあるかどうか
+ * @param {String} userId ユーザーID
+ * @return {boolean} あるかどうか
+ */
+function hasNextMessage(userId) {
+    //ユーザーのシートを手に入れる
+    var SpreadSheet = getSpreadSheet(userId);
+    // ゲーム状況のシートを取得
+    var dataSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
+    //現在の残りメッセージ数を知る
+    var leftMessageNum = dataSheet.getRange(NEXT_TEXT_NUM_RANGE).getValue();
+    //返り値設定
+    var hasNext;
+    if (leftMessageNum==0){//残りメッセージなし
+        hasNext = false;
+    }else{//あり
+        hasNext = true;
+    }
+    return hasNext;
+}
