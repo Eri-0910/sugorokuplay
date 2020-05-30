@@ -71,3 +71,30 @@ function beforeGameAction(userId: String, isCommand: CommandObj) {
   }
   return replyMessages;
 }
+
+/**
+ * ターン内のアクションを実行し、メッセージを返す
+ * @param {String} userId ユーザーID
+ * @param {CommandObj} isCommand コマンドのオブジェクト
+ * @returns {String[]} 出力すべきメッセージ
+ */
+function turnAction(userId: String, isCommand: CommandObj) {
+  //返信メッセージを決める
+  var replyMessages: String[];
+  //フラグアクション
+  //各コマンド
+  if (isCommand.isDebt) {
+      replyMessages = ["借金します"];
+  } else if (isCommand.isRepay) {
+      replyMessages = ["借金を返します"];
+  } else if (isCommand.isStatus) {
+      replyMessages = ["ステータスです"];
+  } else if (isCommand.isDice) {
+      //動く
+      replyMessages = ["動きます"];
+  } else {
+    //無効
+    replyMessages = ["このコマンドは無効です。"];
+  }
+  return replyMessages;
+}

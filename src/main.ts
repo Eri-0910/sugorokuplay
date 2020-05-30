@@ -65,7 +65,11 @@ interface CommandObj {
     isStart: boolean;
     isHelp: boolean;
     isReset: boolean;
-    isNext: boolean
+    isNext: boolean;
+    isDice: boolean;
+    isStatus: boolean;
+    isDebt: boolean;
+    isRepay: boolean;
 }
 
 /**
@@ -75,23 +79,31 @@ interface CommandObj {
  */
 function commandParser(str){
     //ダイスを振るコマンドかどうか
-    //var isDiceCommand = DICE_COMMNAD_LIST.includes(str);
+    var isDiceCommand = DICE_COMMNAD_LIST.includes(str);
     //リセットするかどうか
     var isResetCommand = RESET_COMMNAD_LIST.includes(str);
     //ステータス確認するかどうか
-    //var isStatusCommand = STATUS_COMMNAD_LIST.includes(str);
+    var isStatusCommand = STATUS_COMMNAD_LIST.includes(str);
     //ゲームを新たに開始するかどうか
     var isStartCommand = START_COMMNAD_LIST.includes(str);
     //文章を送るコマンドかどうか
     var isNextCommand = NEXT_COMMNAD_LIST.includes(str);
     //ヘルプコマンドかどうか
     var isHelpCommand = HELP_COMMNAD_LIST.includes(str);
+    //借金コマンドかどうか
+    var isDebtCommand = DEBT_COMMNAD_LIST.includes(str);
+    //借金返金コマンドかどうか
+    var isRepayCommand = REPAY_DEBT_COMMNAD_LIST.includes(str);
     //返すもの
     var isCommand: CommandObj = {
       isStart: isStartCommand,
       isHelp: isHelpCommand,
       isReset: isResetCommand,
       isNext: isNextCommand,
+      isDice: isDiceCommand,
+      isStatus: isStatusCommand,
+      isDebt: isDebtCommand,
+      isRepay: isRepayCommand,
     };
     return isCommand;
 }
