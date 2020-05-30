@@ -1,3 +1,12 @@
+/// <reference path="message.ts"/>
+/// <reference path="restmessage.ts"/>
+/// <reference path="template.ts"/>
+/// <reference path="reset.ts"/>
+/// <reference path="sheet.ts"/>
+/// <reference path="status.ts"/>
+/// <reference path="log.ts"/>
+/// <reference path="const.ts"/>
+
 function diceAction(userId, splitMessage) {
     var replyMessages;
     //ユーザーのシートを手に入れる

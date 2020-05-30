@@ -1,3 +1,12 @@
+/// <reference path="message.ts"/>
+/// <reference path="restmessage.ts"/>
+/// <reference path="template.ts"/>
+/// <reference path="dice.ts"/>
+/// <reference path="reset.ts"/>
+/// <reference path="sheet.ts"/>
+/// <reference path="status.ts"/>
+/// <reference path="log.ts"/>
+/// <reference path="const.ts"/>
 //CHANNEL_ACCESS_TOKENを設定
 var line_endpoint = 'https://api.line.me/v2/bot/message/reply';
 
@@ -26,7 +35,7 @@ function doPost(e) {
     var isCommand = commandParser(splitMessage[0]);
 
     //返信メッセージを決める
-    var replyMessages;
+    var replyMessages: String[];
     if (isExistSheet(userId)) {
         if (isCommand.isReset) {
             //ゲームは開始されていて、リセットがしたい
@@ -62,7 +71,7 @@ function doPost(e) {
     if (replyMessages.length >= 5) {
         setNextMessage(userId, replyMessages.slice(4, replyMessages.length));
         replyMessages = replyMessages.slice(0, 4)
-        template = getNextTemplate();
+        //template = getNextTemplate();
     }
 
     //文字が配列になっているのを整える
