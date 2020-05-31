@@ -6,7 +6,7 @@
  * @param {CommandObj} isCommand コマンドのオブジェクト
  * @returns {string[]} 出力すべきメッセージ
  */
-function gameAction(userId: string, isCommand: CommandObj) {
+function gameAction(userId: string, isCommand: CommandObj): string[] {
   //返信メッセージを決める
   var replyMessages: string[];
   if (isExistSheet(userId)) {
@@ -23,7 +23,7 @@ function gameAction(userId: string, isCommand: CommandObj) {
  * @param {CommandObj} isCommand コマンドのオブジェクト
  * @returns {string[]} 出力すべきメッセージ
  */
-function onGameAction(userId: string, isCommand: CommandObj) {
+function onGameAction(userId: string, isCommand: CommandObj): string[] {
   //返信メッセージを決める
   var replyMessages: string[];
   if (isCommand.isReset) {
@@ -40,7 +40,7 @@ function onGameAction(userId: string, isCommand: CommandObj) {
     }
   } else {
     //ゲームは開始されている
-    replyMessages =  turnAction(userId, isCommand);
+    replyMessages = turnAction(userId, isCommand);
   }
   return replyMessages;
 }
@@ -51,7 +51,7 @@ function onGameAction(userId: string, isCommand: CommandObj) {
  * @param {CommandObj} isCommand コマンドのオブジェクト
  * @returns {string[]} 出力すべきメッセージ
  */
-function beforeGameAction(userId: string, isCommand: CommandObj) {
+function beforeGameAction(userId: string, isCommand: CommandObj): string[] {
   //返信メッセージを決める
   var replyMessages: string[];
   if (isCommand.isStart) {
@@ -80,49 +80,86 @@ function beforeGameAction(userId: string, isCommand: CommandObj) {
  * @param {CommandObj} isCommand コマンドのオブジェクト
  * @returns {string[]} 出力すべきメッセージ
  */
-function turnAction(userId: string, isCommand: CommandObj) {
+function turnAction(userId: string, isCommand: CommandObj): string[] {
   //返信メッセージを決める
   var replyMessages: string[];
   //フラグの確認
   var flag: Flag = getFlag(userId);
   if (flag.isRepayDebt) {//フラグアクション
     //借金を返す
-    replyMessages = ["借金を返します"];
+    replyMessages = repayDebt(userId);
     setRepayDebt(userId, false);
   } else if (flag.isBorrowDebt) {
-      //借金を借りる
-    replyMessages = ["借金をかります"];
+    //借金を借りる
+    replyMessages = borrowDebt(userId);
     setBorrowDebt(userId, false);
   } else if (flag.isChooseWork) {
-      //仕事につく
-    replyMessages = ["仕事につきます"];
+    //仕事につく
+    replyMessages = startChooseWork(userId);
   } else if (flag.isChooseHouse) {
-      //家を選ぶ
-    replyMessages = ["家を選びます"];
+    //家を選ぶ
+    replyMessages = startChooseHouse(userId);
   } else if (flag.isFireInsurance) {
-      //火災保険
-    replyMessages = ["火災保険に入ります"];
+    //火災保険
+    replyMessages = startTakeFireInsurance(userId);
   } else if (flag.isLifeInsurance) {
     //生命保険
-    replyMessages = ["生命保険に入ります"];
+    replyMessages = startTakeLifeInsurance(userId);
   } else if (flag.isStock) {
     //株
-    replyMessages = ["株を買います"];
+    replyMessages = startStock(userId);
   } else if (isCommand.isDebt) {//各コマンド
     //借金をしたい
     replyMessages = confirmBorrowDebt(userId);
   } else if (isCommand.isRepay) {
-      //借金を返したい
+    //借金を返したい
     replyMessages = confirmRepayDebt(userId);
   } else if (isCommand.isStatus) {
     //ステータスを取得
     replyMessages = statusAction(userId);
   } else if (isCommand.isDice) {
     //動く
-    replyMessages = ["動きます"];
+    if (canMove(userId)) {
+      replyMessages = moveAction(userId);
+    } else {
+      replyMessages = ["動けません"];
+      setMovable(userId, true);
+    }
   } else {
     //無効
     replyMessages = ["このコマンドは無効です。"];
   }
   return replyMessages;
+}
+
+function borrowDebt(userId: string): string[] {
+  return ["借金をかります"];
+}
+
+function startStock(userId: string): string[] {
+  return ["株を買います"];
+}
+
+function startTakeLifeInsurance(userId: string): string[] {
+  return ["生命保険に入ります"];
+}
+
+function startTakeFireInsurance(userId: string): string[] {
+  return ["火災保険に入ります"];
+}
+
+function startChooseHouse(userId: string): string[] {
+  return ["家を選びます"];
+}
+
+function startChooseWork(userId: string): string[] {
+  return ["仕事につきます"];
+}
+
+function repayDebt(userId: string): string[] {
+  return ["借金を返します"];
+}
+
+function moveAction(userId: string): string[] {
+  return ["動きます"];
 }
