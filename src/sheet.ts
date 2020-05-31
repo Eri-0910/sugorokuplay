@@ -9,7 +9,7 @@ var scriptProperties = PropertiesService.getScriptProperties();
  * @param {string} user_id -ユーザーID
  * @return {boolean} シートが存在するかどうかを真偽値で返す
  */
-function isExistSheet(user_id: string){
+function isExistSheet(user_id: string): boolean{
   var sheetId = scriptProperties.getProperty(user_id);
   var isExist: boolean;
   if (sheetId == null) {
@@ -17,7 +17,6 @@ function isExistSheet(user_id: string){
   }else{
     isExist = true;
   }
-
   return isExist;
 }
 
@@ -27,7 +26,7 @@ function isExistSheet(user_id: string){
  * @param {string} user_id -ユーザーID
  * @return {GoogleAppsScript.Spreadsheet.Spreadsheet} そのユーザーのシートを返す
  */
-function getSpreadSheet(user_id: string) {
+function getSpreadSheet(user_id: string): GoogleAppsScript.Spreadsheet.Spreadsheet {
   //プロパティストアからシートのIDを探す
   var sid = scriptProperties.getProperty(user_id);
   if (sid == null) {
@@ -49,7 +48,7 @@ function getSpreadSheet(user_id: string) {
  * @param {string} user_id -ユーザーID
  * @return {GoogleAppsScript.Spreadsheet.Spreadsheet} 作成したシートを返す
  */
-function createSpreadSheet(user_id: string) {
+function createSpreadSheet(user_id: string): GoogleAppsScript.Spreadsheet.Spreadsheet {
   //元となるスープレッドシート
   var originSheet = SpreadsheetApp.openById(ORIGINAL_SHEET_ID);
   //コピーして新しく名前つけたスプレッドシート

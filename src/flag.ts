@@ -56,7 +56,7 @@ function setBorrowDebt(userId: string, isBorrow: boolean) {
     // これでフラグの載っているのシートを取得
     var gameSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
     //フラグをセット
-    gameSheet.getRange(REPAY_DEBT_FLAG_RANGE).setValue(Number(isBorrow));
+    gameSheet.getRange(BORROW_DEBT_FLAG_RANGE).setValue(Number(isBorrow));
 }
 
 /**
@@ -70,7 +70,7 @@ function setChooseWork(userId: string, isChooseWork: boolean) {
   // これでフラグの載っているのシートを取得
   var gameSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
   //フラグをセット
-  gameSheet.getRange(REPAY_DEBT_FLAG_RANGE).setValue(Number(isChooseWork));
+  gameSheet.getRange(CHOOSE_WORK_FLAG_RANGE).setValue(Number(isChooseWork));
 }
 
 /**
@@ -84,7 +84,7 @@ function setChooseHouse(userId: string, isChooseHouse: boolean) {
   // これでフラグの載っているのシートを取得
   var gameSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
   //フラグをセット
-  gameSheet.getRange(REPAY_DEBT_FLAG_RANGE).setValue(Number(isChooseHouse));
+  gameSheet.getRange(CHOOSE_HOUSE_FLAG_RANGE).setValue(Number(isChooseHouse));
 }
 
 /**
@@ -98,7 +98,7 @@ function setLifeInsurance(userId: string, isLifeInsurance: boolean) {
   // これでフラグの載っているのシートを取得
   var gameSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
   //フラグをセット
-  gameSheet.getRange(REPAY_DEBT_FLAG_RANGE).setValue(Number(isLifeInsurance));
+  gameSheet.getRange(LIFE_INSURANCE_FLAG_RANGE).setValue(Number(isLifeInsurance));
 }
 
 /**
@@ -112,7 +112,7 @@ function setFireInsurance(userId: string, isFireInsurance: boolean) {
   // これでフラグの載っているのシートを取得
   var gameSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
   //フラグをセット
-  gameSheet.getRange(REPAY_DEBT_FLAG_RANGE).setValue(Number(isFireInsurance));
+  gameSheet.getRange(FIRE_INSURANCE_FLAG_RANGE).setValue(Number(isFireInsurance));
 }
 
 /**
@@ -126,5 +126,5 @@ function setStock(userId: string, isStock: boolean) {
   // これでフラグの載っているのシートを取得
   var gameSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
   //フラグをセット
-  gameSheet.getRange(REPAY_DEBT_FLAG_RANGE).setValue(Number(isStock));
+  gameSheet.getRange(STOCK_FLAG_RANGE).setValue(Number(isStock));
 }

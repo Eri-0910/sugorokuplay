@@ -1,3 +1,5 @@
+/// <reference path="debtaction.ts"/>
+/// <reference path="flag.ts"/>
 /**
  * アクションを実行し、メッセージを返す
  * @param {string} userId ユーザーID
