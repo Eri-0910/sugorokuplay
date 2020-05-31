@@ -37,7 +37,7 @@ function doPost(e) {
     var isCommand: CommandObj = commandParser(splitMessage[0]);
 
     //アクションを実行しメッセージを取得
-    var replyMessages: String[] = gameAction(userId, isCommand);
+    var replyMessages: string[] = gameAction(userId, isCommand);
 
     //長さの設定
     if (replyMessages.length >= 5) {
@@ -74,7 +74,7 @@ interface CommandObj {
 
 /**
  * コマンドにパースする
- * @param {String} str 文字列
+ * @param {string} str 文字列
  * @returns {CommandObj} コマンドかどうかをその内容ごとにboolにしたもの
  */
 function commandParser(str){

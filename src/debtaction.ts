@@ -1,21 +1,25 @@
 /**
  * 借金をする確認を出す
- * @param {String} userId ユーザーID
- * @returns {String[]} 出力したいッセージ
+ * @param {string} userId ユーザーID
+ * @returns {string[]} 出力したいッセージ
  */
-function cnfirmBorrowDebt(userId: String) {
-    var replyMessages:String[];
-    replyMessages = ["借金します"];
-    return replyMessages;
+function confirmBorrowDebt(userId: string): string[] {
+  var replyMessages: string[];
+  replyMessages = ["借金しますか？"];
+  // フラグ
+  setBorrowDebt(userId, true);
+  return replyMessages;
 }
 
 /**
  * 借金を返す確認を出す
- * @param {String} userId ユーザーID
- * @returns {String[]} 出力したいッセージ
+ * @param {string} userId ユーザーID
+ * @returns {string[]} 出力したいッセージ
  */
-function cnfirmRepayDebt(userId: String) {
-    var replyMessages:String[];
-    replyMessages = ["借金を返します"];
-    return replyMessages;
+function confirmRepayDebt(userId: string): string[] {
+  var replyMessages: string[];
+  replyMessages = ["返金金額を入力してください"];
+  // フラグ
+  setRepayDebt(userId, true);
+  return replyMessages;
 }

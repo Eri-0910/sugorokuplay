@@ -1,12 +1,12 @@
 /**
  * アクションを実行し、メッセージを返す
- * @param {String} userId ユーザーID
+ * @param {string} userId ユーザーID
  * @param {CommandObj} isCommand コマンドのオブジェクト
- * @returns {String[]} 出力すべきメッセージ
+ * @returns {string[]} 出力すべきメッセージ
  */
-function gameAction(userId: String, isCommand: CommandObj) {
+function gameAction(userId: string, isCommand: CommandObj) {
   //返信メッセージを決める
-  var replyMessages: String[];
+  var replyMessages: string[];
   if (isExistSheet(userId)) {
     replyMessages = onGameAction(userId, isCommand);
   } else {
@@ -17,13 +17,13 @@ function gameAction(userId: String, isCommand: CommandObj) {
 
 /**
  * ゲーム開始後のアクションを実行し、メッセージを返す
- * @param {String} userId ユーザーID
+ * @param {string} userId ユーザーID
  * @param {CommandObj} isCommand コマンドのオブジェクト
- * @returns {String[]} 出力すべきメッセージ
+ * @returns {string[]} 出力すべきメッセージ
  */
-function onGameAction(userId: String, isCommand: CommandObj) {
+function onGameAction(userId: string, isCommand: CommandObj) {
   //返信メッセージを決める
-  var replyMessages: String[];
+  var replyMessages: string[];
   if (isCommand.isReset) {
     //リセットする
     replyMessages = resetAction(userId);
@@ -45,13 +45,13 @@ function onGameAction(userId: String, isCommand: CommandObj) {
 
 /**
  * ゲーム開始前のアクションを実行し、メッセージを返す
- * @param {String} userId ユーザーID
+ * @param {string} userId ユーザーID
  * @param {CommandObj} isCommand コマンドのオブジェクト
- * @returns {String[]} 出力すべきメッセージ
+ * @returns {string[]} 出力すべきメッセージ
  */
-function beforeGameAction(userId: String, isCommand: CommandObj) {
+function beforeGameAction(userId: string, isCommand: CommandObj) {
   //返信メッセージを決める
-  var replyMessages: String[];
+  var replyMessages: string[];
   if (isCommand.isStart) {
     //未開始で開始コマンド
     //ゲーム開始
@@ -74,21 +74,44 @@ function beforeGameAction(userId: String, isCommand: CommandObj) {
 
 /**
  * ターン内のアクションを実行し、メッセージを返す
- * @param {String} userId ユーザーID
+ * @param {string} userId ユーザーID
  * @param {CommandObj} isCommand コマンドのオブジェクト
- * @returns {String[]} 出力すべきメッセージ
+ * @returns {string[]} 出力すべきメッセージ
  */
-function turnAction(userId: String, isCommand: CommandObj) {
+function turnAction(userId: string, isCommand: CommandObj) {
   //返信メッセージを決める
-  var replyMessages: String[];
-  //フラグアクション
-  //各コマンド
-  if (isCommand.isDebt) {
-      //借金をしたい
-    replyMessages = cnfirmBorrowDebt(userId);
+  var replyMessages: string[];
+  //フラグの確認
+  var flag: Flag = getFlag(userId);
+  if (flag.isRepayDebt) {//フラグアクション
+    //借金を返す
+    replyMessages = ["借金を返します"];
+    setRepayDebt(userId, false);
+  } else if (flag.isBorrowDebt) {
+      //借金を借りる
+    replyMessages = ["借金をかります"];
+    setBorrowDebt(userId, false);
+  } else if (flag.isChooseWork) {
+      //仕事につく
+    replyMessages = ["仕事につきます"];
+  } else if (flag.isChooseHouse) {
+      //家を選ぶ
+    replyMessages = ["家を選びます"];
+  } else if (flag.isFireInsurance) {
+      //火災保険
+    replyMessages = ["火災保険に入ります"];
+  } else if (flag.isLifeInsurance) {
+    //生命保険
+    replyMessages = ["生命保険に入ります"];
+  } else if (flag.isStock) {
+    //株
+    replyMessages = ["株を買います"];
+  } else if (isCommand.isDebt) {//各コマンド
+    //借金をしたい
+    replyMessages = confirmBorrowDebt(userId);
   } else if (isCommand.isRepay) {
       //借金を返したい
-    replyMessages = cnfirmRepayDebt(userId);
+    replyMessages = confirmRepayDebt(userId);
   } else if (isCommand.isStatus) {
     //ステータスを取得
     replyMessages = statusAction(userId);

@@ -1,3 +1,4 @@
+/// <reference path="key.ts"/>
 // プロファイル取得用のAPIのURL
 var line_endpoint_profile = 'https://api.line.me/v2/bot/profile';
 //プロパティのあれ長いので短く
@@ -5,12 +6,12 @@ var scriptProperties = PropertiesService.getScriptProperties();
 
 /**
  * ScriptPropertiesのデータを元にシートが存在するかどうかを確認する。
- * @param {String} user_id -ユーザーID
+ * @param {string} user_id -ユーザーID
  * @return {boolean} シートが存在するかどうかを真偽値で返す
  */
-function isExistSheet(user_id){
+function isExistSheet(user_id: string){
   var sheetId = scriptProperties.getProperty(user_id);
-  var isExist;
+  var isExist: boolean;
   if (sheetId == null) {
     isExist = false;
   }else{
@@ -23,10 +24,10 @@ function isExistSheet(user_id){
 
 /**
  * ユーザーのシートを取得する。なければcreateSpreadSheetを用いて新規作成する。
- * @param {String} user_id -ユーザーID
+ * @param {string} user_id -ユーザーID
  * @return {GoogleAppsScript.Spreadsheet.Spreadsheet} そのユーザーのシートを返す
  */
-function getSpreadSheet(user_id) {
+function getSpreadSheet(user_id: string) {
   //プロパティストアからシートのIDを探す
   var sid = scriptProperties.getProperty(user_id);
   if (sid == null) {
@@ -45,10 +46,10 @@ function getSpreadSheet(user_id) {
 
 /**
  * ユーザーのシートを新規作成する。ユーザーのIDとシートのIDはScriptPropertiesに保管される。
- * @param {String} user_id -ユーザーID
+ * @param {string} user_id -ユーザーID
  * @return {GoogleAppsScript.Spreadsheet.Spreadsheet} 作成したシートを返す
  */
-function createSpreadSheet(user_id) {
+function createSpreadSheet(user_id: string) {
   //元となるスープレッドシート
   var originSheet = SpreadsheetApp.openById(ORIGINAL_SHEET_ID);
   //コピーして新しく名前つけたスプレッドシート
@@ -66,9 +67,9 @@ function createSpreadSheet(user_id) {
 /**
  * ユーザーのシートを削除する。ゴミ箱にも入れない。
  * ScriptPropertiesからも削除する。
- * @param {String} user_id -ユーザーID
+ * @param {string} user_id -ユーザーID
  */
-function deleteData(user_id) {
+function deleteData(user_id: string) {
   var SpreadSheet = getSpreadSheet(user_id);
   //ゴミ箱に入れずに削除
   scriptProperties.deleteProperty(user_id);
