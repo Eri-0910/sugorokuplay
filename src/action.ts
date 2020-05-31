@@ -38,7 +38,7 @@ function onGameAction(userId: String, isCommand: CommandObj) {
     }
   } else {
     //ゲームは開始されている
-    replyMessages = ["ゲームアクションを実行します"];
+    replyMessages =  turnAction(userId, isCommand);
   }
   return replyMessages;
 }
@@ -84,14 +84,17 @@ function turnAction(userId: String, isCommand: CommandObj) {
   //フラグアクション
   //各コマンド
   if (isCommand.isDebt) {
-      replyMessages = ["借金します"];
+      //借金をしたい
+    replyMessages = cnfirmBorrowDebt(userId);
   } else if (isCommand.isRepay) {
-      replyMessages = ["借金を返します"];
+      //借金を返したい
+    replyMessages = cnfirmRepayDebt(userId);
   } else if (isCommand.isStatus) {
-      replyMessages = ["ステータスです"];
+    //ステータスを取得
+    replyMessages = statusAction(userId);
   } else if (isCommand.isDice) {
-      //動く
-      replyMessages = ["動きます"];
+    //動く
+    replyMessages = ["動きます"];
   } else {
     //無効
     replyMessages = ["このコマンドは無効です。"];

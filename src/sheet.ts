@@ -2,7 +2,6 @@
 var line_endpoint_profile = 'https://api.line.me/v2/bot/profile';
 //プロパティのあれ長いので短く
 var scriptProperties = PropertiesService.getScriptProperties();
-const ORIGINAL_SHEET_ID = '1tKNqBfyIwmeiwPwCAdqKeRYfGK280zPklCaXghKgLYo';
 
 /**
  * ScriptPropertiesのデータを元にシートが存在するかどうかを確認する。
