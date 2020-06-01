@@ -37,19 +37,17 @@ function doPost(e) {
     var isCommand: CommandObj = commandParser(splitMessage[0]);
 
     //アクションを実行しメッセージを取得
-    var replyMessages: string[] = gameAction(userId, isCommand);
+    var replyMessages: Object[] = gameAction(userId, isCommand);
 
     //長さの設定
-    if (replyMessages.length >= 5) {
+    if (replyMessages.length > 5) {
         setNextMessage(userId, replyMessages.slice(4, replyMessages.length));
         replyMessages = replyMessages.slice(0, 4)
-        //template = getNextTemplate();
+        replyMessages.push(getNextTemplate());
     }
 
-    //文字が配列になっているのを整える
-    var messages = replyMessages.map(message => stringToMessage(message));
     // メッセージを返信
-    sendReplyMessages(replyToken, messages);
+    sendReplyMessages(replyToken, replyMessages);
 
   } catch (error) {
     //ログをフォルダに保存
@@ -77,7 +75,7 @@ interface CommandObj {
  * @param {string} str 文字列
  * @returns {CommandObj} コマンドかどうかをその内容ごとにboolにしたもの
  */
-function commandParser(str){
+function commandParser(str: string): CommandObj{
     //ダイスを振るコマンドかどうか
     var isDiceCommand = DICE_COMMNAD_LIST.includes(str);
     //リセットするかどうか

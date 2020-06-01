@@ -1,4 +1,8 @@
-function getNextMessage(userId){
+/**
+ * 残っているメッセージを送れるだけ取得する
+ * @param userId ユーザーID
+ */
+function getNextMessage(userId: string):string[]{
     //ユーザーのシートを手に入れる
     var SpreadSheet = getSpreadSheet(userId);
     // これで１枚のシートを取得
