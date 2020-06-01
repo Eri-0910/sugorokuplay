@@ -1,5 +1,8 @@
 /// <reference path="debtaction.ts"/>
 /// <reference path="flag.ts"/>
+/// <reference path="user.ts"/>
+/// <reference path="reset.ts"/>
+/// <reference path="main.ts"/>
 /**
  * アクションを実行し、メッセージを返す
  * @param {string} userId ユーザーID
@@ -118,11 +121,12 @@ function turnAction(userId: string, isCommand: CommandObj): string[] {
     //ステータスを取得
     replyMessages = statusAction(userId);
   } else if (isCommand.isDice) {
-    //動く
     if (canMove(userId)) {
+    　//動けるので動く
       replyMessages = moveAction(userId);
     } else {
-      replyMessages = ["動けません"];
+      replyMessages = ["このターンは休みです"];
+      //動ける様に
       setMovable(userId, true);
     }
   } else {
@@ -161,5 +165,16 @@ function repayDebt(userId: string): string[] {
 }
 
 function moveAction(userId: string): string[] {
-  return ["動きます"];
+  //サイコロをふる
+  var dice: number = Math.floor(Math.random() * 6) + 1;
+
+  //振った目の出力
+  const DICE_EMOJI = '\u{1F3B2}';
+  var diceMessages:string[] = [DICE_EMOJI + dice + 'です'];
+
+  // マスのリストを取得
+  var pieceList = movePiece(userId, dice);
+  SpaceAction(pieceList[0]);
+
+  return diceMessages;
 }
