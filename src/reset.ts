@@ -6,7 +6,7 @@ function resetAction(userId) {
     /* シートを消す */
     deleteData(userId);
     /* 削除した旨メッセージ */
-    var replyMessages = ['履歴をリセットしました。次回サイコロを振ると新しくゲームが始まります'];
+    var replyMessages = [stringToMessage('履歴をリセットしました。次回サイコロを振ると新しくゲームが始まります')];
 
     return replyMessages;
 }

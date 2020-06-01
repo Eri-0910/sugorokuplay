@@ -7,11 +7,11 @@
  * アクションを実行し、メッセージを返す
  * @param {string} userId ユーザーID
  * @param {CommandObj} isCommand コマンドのオブジェクト
- * @returns {string[]} 出力すべきメッセージ
+ * @returns {Object[]} 出力すべきメッセージ
  */
-function gameAction(userId: string, isCommand: CommandObj): string[] {
+function gameAction(userId: string, isCommand: CommandObj): Object[] {
   //返信メッセージを決める
-  var replyMessages: string[];
+  var replyMessages: Object[];
   if (isExistSheet(userId)) {
     replyMessages = onGameAction(userId, isCommand);
   } else {
@@ -24,11 +24,11 @@ function gameAction(userId: string, isCommand: CommandObj): string[] {
  * ゲーム開始後のアクションを実行し、メッセージを返す
  * @param {string} userId ユーザーID
  * @param {CommandObj} isCommand コマンドのオブジェクト
- * @returns {string[]} 出力すべきメッセージ
+ * @returns {Object[]} 出力すべきメッセージ
  */
-function onGameAction(userId: string, isCommand: CommandObj): string[] {
+function onGameAction(userId: string, isCommand: CommandObj): Object[] {
   //返信メッセージを決める
-  var replyMessages: string[];
+  var replyMessages: Object[];
   if (isCommand.isReset) {
     //リセットする
     replyMessages = resetAction(userId);
@@ -36,10 +36,10 @@ function onGameAction(userId: string, isCommand: CommandObj): string[] {
   } else if (hasNextMessage(userId)) {
     if (isCommand.isNext) {
       //続きのメッセージがある
-      replyMessages = ["続きの文章です"];
+      replyMessages = getNextMessage(userId);
     } else {
       //続きのメッセージがあるが取得しようとしていない
-      replyMessages = ["続きの文章があります", "続きの文章です"];
+      replyMessages = [stringToMessage('続きのメッセージが残っています。「次へ」と送信して残っているメッセージを確認してください。')];
     }
   } else {
     //ゲームは開始されている
@@ -52,27 +52,23 @@ function onGameAction(userId: string, isCommand: CommandObj): string[] {
  * ゲーム開始前のアクションを実行し、メッセージを返す
  * @param {string} userId ユーザーID
  * @param {CommandObj} isCommand コマンドのオブジェクト
- * @returns {string[]} 出力すべきメッセージ
+ * @returns {Object[]} 出力すべきメッセージ
  */
-function beforeGameAction(userId: string, isCommand: CommandObj): string[] {
+function beforeGameAction(userId: string, isCommand: CommandObj): Object[] {
   //返信メッセージを決める
-  var replyMessages: string[];
+  var replyMessages: Object[];
   if (isCommand.isStart) {
     //未開始で開始コマンド
     //ゲーム開始
     gameStart(userId);
     //開始できたらメッセージ
-    replyMessages = ["ゲームを開始しました。"];
+    replyMessages = [stringToMessage('ゲームを開始しました。')];
   } else if (isCommand.isHelp) {
     //ゲーム未開始時点のヘルプ
-    replyMessages = [
-      "「スタート」と送ると、ゲームを開始します。それ以外のコマンドは、ゲーム開始後にヘルプをご覧ください。",
-    ];
+    replyMessages = [stringToMessage('「スタート」と送ると、ゲームを開始します。それ以外のコマンドは、ゲーム開始後にヘルプをご覧ください。')];
   } else {
     //想定外の言葉が入力されたときの処理
-    replyMessages = [
-      "ゲームが開始されていません。「スタート」と送ってください",
-    ];
+    replyMessages = [stringToMessage('ゲームが開始されていません。「スタート」と送ってください')];
   }
   return replyMessages;
 }
@@ -81,11 +77,11 @@ function beforeGameAction(userId: string, isCommand: CommandObj): string[] {
  * ターン内のアクションを実行し、メッセージを返す
  * @param {string} userId ユーザーID
  * @param {CommandObj} isCommand コマンドのオブジェクト
- * @returns {string[]} 出力すべきメッセージ
+ * @returns {Object[]} 出力すべきメッセージ
  */
-function turnAction(userId: string, isCommand: CommandObj): string[] {
+function turnAction(userId: string, isCommand: CommandObj): Object[] {
   //返信メッセージを決める
-  var replyMessages: string[];
+  var replyMessages: Object[];
   //フラグの確認
   var flag: Flag = getFlag(userId);
   if (flag.isRepayDebt) {//フラグアクション
@@ -125,52 +121,52 @@ function turnAction(userId: string, isCommand: CommandObj): string[] {
     　//動けるので動く
       replyMessages = moveAction(userId);
     } else {
-      replyMessages = ["このターンは休みです"];
+      replyMessages = [stringToMessage('このターンは休みです')];
       //動ける様に
       setMovable(userId, true);
     }
   } else {
     //無効
-    replyMessages = ["このコマンドは無効です。"];
+    replyMessages = [stringToMessage('このコマンドは無効です。')];
   }
   return replyMessages;
 }
 
-function borrowDebt(userId: string): string[] {
-  return ["借金をかります"];
+function borrowDebt(userId: string): Object[] {
+  return [stringToMessage("借金をかります")];
 }
 
-function startStock(userId: string): string[] {
-  return ["株を買います"];
+function startStock(userId: string): Object[] {
+  return [stringToMessage("株を買います")];
 }
 
-function startTakeLifeInsurance(userId: string): string[] {
-  return ["生命保険に入ります"];
+function startTakeLifeInsurance(userId: string): Object[] {
+  return [stringToMessage('生命保険に入ります'];
 }
 
-function startTakeFireInsurance(userId: string): string[] {
-  return ["火災保険に入ります"];
+function startTakeFireInsurance(userId: string): Object[] {
+  return [stringToMessage("火災保険に入ります")];
 }
 
-function startChooseHouse(userId: string): string[] {
-  return ["家を選びます"];
+function startChooseHouse(userId: string): Object[] {
+  return [stringToMessage("家を選びます")];
 }
 
-function startChooseWork(userId: string): string[] {
-  return ["仕事につきます"];
+function startChooseWork(userId: string): Object[] {
+  return [stringToMessage("仕事につきます")];
 }
 
-function repayDebt(userId: string): string[] {
-  return ["借金を返します"];
+function repayDebt(userId: string): Object[] {
+  return [stringToMessage("借金を返します")];
 }
 
-function moveAction(userId: string): string[] {
+function moveAction(userId: string): Object[] {
   //サイコロをふる
   var dice: number = Math.floor(Math.random() * 6) + 1;
 
   //振った目の出力
   const DICE_EMOJI = '\u{1F3B2}';
-  var diceMessages:string[] = [DICE_EMOJI + dice + 'です'];
+  var diceMessages: Object[] = [stringToMessage(DICE_EMOJI + dice + 'です')];
 
   // マスのリストを取得
   var pieceList = movePiece(userId, dice);
