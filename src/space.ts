@@ -73,13 +73,8 @@ function SpaceAction(space: Space):Object[]{
     //休み
     //ゴール
 
-    // 空になるのを防ぐ
-    var content = (space.content == "") ? "ゴール済みです" : space.content;
-    var money = (space.getNum == 0) ? 0 : space.getNum;
-    var move = (space.goNum == 0) ? 0 : space.goNum;
-
     //マスの内容
-    var placeMessage = getPlaceMessage(content, money, move);
+    var placeMessage = getPlaceMessage(space);
     return [placeMessage];
 }
 
@@ -108,4 +103,138 @@ interface Space{
     canTakeFireInsurance: boolean;
     canBuyStock: boolean;
     stockValue: boolean;
+}
+
+/**
+ * スペースの内容からスペース内容表示用のjsonを返す
+ * @param space マス
+ */
+function getPlaceMessage(space:Space) {
+
+    // マスの内容
+    var content: string = space.content;
+    // 金額
+    var money: string;
+    if (space.isGet){
+        money = space.getNum.toString() + "円";
+    } else if (space.isPay){
+        money = "-" + space.payNum.toString() + "円";
+    } else{
+        money = "変化なし";
+    }
+    //移動
+    var move: string;
+    if (space.isGo) {
+        move = space.goNum.toString() + "マス進む";
+    } else if (space.isBack) {
+        move = space.backNum.toString() + "マス戻る";
+    } else if (space.isStop){
+        move = space.stopTurn.toString() + "ターン休み";
+    } else {
+        move = "なし";
+    }
+
+    return {
+        "type": "flex",
+        "altText": "移動結果を表示します。",
+        "contents": {
+            "type": "bubble",
+            "header": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                    {
+                        "type": "text",
+                        "text": "移動結果",
+                        "size": "xxl",
+                        "weight": "bold"
+                    }
+                ]
+            },
+            "body": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                    {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                            {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": content,
+                                        "wrap": true
+                                    }
+                                ],
+                                "backgroundColor": "#ffffcc",
+                                "borderWidth": "3px",
+                                "borderColor": "#565656",
+                                "cornerRadius": "3px",
+                                "paddingAll": "20px"
+                            }
+                        ],
+                        "paddingAll": "20px"
+                    },
+                    {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                            {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "💴",
+                                        "flex": 1,
+                                        "align": "center"
+                                    },
+                                    {
+                                        "type": "separator"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": money,
+                                        "flex": 5,
+                                        "margin": "md"
+                                    }
+                                ],
+                                "paddingAll": "2px"
+                            },
+                            {
+                                "type": "separator"
+                            },
+                            {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "⇄",
+                                        "flex": 1,
+                                        "align": "center"
+                                    },
+                                    {
+                                        "type": "separator"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": move,
+                                        "flex": 5,
+                                        "margin": "md"
+                                    }
+                                ],
+                                "paddingAll": "2px"
+                            }
+                        ],
+                        "paddingAll": "10px"
+                    }
+                ],
+                "spacing": "md"
+            }
+        }
+    }
 }
