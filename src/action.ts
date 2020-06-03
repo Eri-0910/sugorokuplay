@@ -141,7 +141,7 @@ function startStock(userId: string): Object[] {
 }
 
 function startTakeLifeInsurance(userId: string): Object[] {
-  return [stringToMessage('生命保険に入ります'];
+  return [stringToMessage('生命保険に入ります')];
 }
 
 function startTakeFireInsurance(userId: string): Object[] {
@@ -161,6 +161,8 @@ function repayDebt(userId: string): Object[] {
 }
 
 function moveAction(userId: string): Object[] {
+  //返り値
+  var replyMessages: Object[];
   //サイコロをふる
   var dice: number = Math.floor(Math.random() * 6) + 1;
 
@@ -168,9 +170,16 @@ function moveAction(userId: string): Object[] {
   const DICE_EMOJI = '\u{1F3B2}';
   var diceMessages: Object[] = [stringToMessage(DICE_EMOJI + dice + 'です')];
 
-  // マスのリストを取得
-  var pieceList = movePiece(userId, dice);
-  SpaceAction(pieceList[0]);
+  replyMessages = diceMessages;
 
-  return diceMessages;
+  // マスのリストを取得
+  var pieceList: Space[] = movePiece(userId, dice);
+
+  // リストの要素毎にアクション
+  for (let i = 0; i < pieceList.length; i++) {
+    var placeMessages: Object[] = SpaceAction(pieceList[i]);
+    replyMessages = replyMessages.concat(placeMessages);
+  }
+
+  return replyMessages;
 }

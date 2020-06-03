@@ -4,7 +4,7 @@
  */
 function sendReplyMessages(replyToken: string, messages: Object[]) {
     var line_endpoint = 'https://api.line.me/v2/bot/message/reply';
-    UrlFetchApp.fetch(line_endpoint, {
+    var response = UrlFetchApp.fetch(line_endpoint, {
         validateHttpsCertificates: false,
         'headers': {
             'Content-Type': 'application/json; charset=UTF-8',
@@ -15,7 +15,9 @@ function sendReplyMessages(replyToken: string, messages: Object[]) {
             'replyToken': replyToken,
             'messages': messages,
         }),
+        muteHttpExceptions: true
     });
+    makeResponceLog(response);
 }
 
 /**
