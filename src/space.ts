@@ -14,68 +14,144 @@ function movePiece(userId: string, num:number): Space[] {
     var startPlace: number = personalDataSheet.getRange(NOW_PLACE_RANGE).getValue();
 
     // 1マスずつみる
-    var oneSpaceRow:number = startPlace + num + 1;
+    var oneSpaceId:number = startPlace + num ;
     // やるべきマスのリストを取得
     // 駒の位置を更新
     personalDataSheet.getRange(NOW_PLACE_RANGE).setValue(startPlace + num);
-
-    // ボードシートを取得
-    var boardDataSheet = SpreadSheet.getSheetByName(BOARD_DATA_SHEET_NAME);
-
     // 返す
-    var spaceList: Space[] = [{
-        id: boardDataSheet.getRange(SPACE_ID_COLUMN + oneSpaceRow).getValue(),
-        content: boardDataSheet.getRange(SPACE_CONTENT_COLUMN + oneSpaceRow).getValue(),
-        isGo: boardDataSheet.getRange(IS_GO_COLUMN + oneSpaceRow).getValue(),
-        goNum: boardDataSheet.getRange(GO_NUM_COLUMN + oneSpaceRow).getValue(),
-        isBack: boardDataSheet.getRange(IS_BACK_COLUMN + oneSpaceRow).getValue(),
-        backNum: boardDataSheet.getRange(BACK_NUM_COLUMN + oneSpaceRow).getValue(),
-        isStop: boardDataSheet.getRange(IS_STOP_COLUMN + oneSpaceRow).getValue(),
-        stopTurn: boardDataSheet.getRange(STOP_TURN_COLUMN + oneSpaceRow).getValue(),
-        isGet: boardDataSheet.getRange(IS_GET_MONEY_COLUMN + oneSpaceRow).getValue(),
-        getNum: boardDataSheet.getRange(GET_MONEY_AMOUNT_COLUMN + oneSpaceRow).getValue(),
-        isPay: boardDataSheet.getRange(IS_PAY_MONEY_COLUMN + oneSpaceRow).getValue(),
-        payNum: boardDataSheet.getRange(PAY_MONEY_AMOUNT_COLUMN + oneSpaceRow).getValue(),
-        isThroughAction: boardDataSheet.getRange(IS_THROUGH_ACTION_COLUMN + oneSpaceRow).getValue(),
-        isMustStop: boardDataSheet.getRange(IS_MUST_STOP_SPACE_COLUMN + oneSpaceRow).getValue(),
-        isPayDay: boardDataSheet.getRange(IS_PAY_DAY_COLUMN + oneSpaceRow).getValue(),
-        isMarriage: boardDataSheet.getRange(IS_MARRIAGE_COLUMN + oneSpaceRow).getValue(),
-        isBirthChild: boardDataSheet.getRange(IS_BIRTH_CHILD_COLUMN + oneSpaceRow).getValue(),
-        childNum: boardDataSheet.getRange(CHILD_NUM_COLUMN + oneSpaceRow).getValue(),
-        canBuyHouse: boardDataSheet.getRange(CAN_BUY_HOUSE_COLUMN + oneSpaceRow).getValue(),
-        isLostHOuse: boardDataSheet.getRange(IS_LOST_HOUSE_COLUMN + oneSpaceRow).getValue(),
-        canTakeLifeInsurance: boardDataSheet.getRange(CAN_LIFE_INSURANCE_COLUMN + oneSpaceRow).getValue(),
-        canTakeFireInsurance: boardDataSheet.getRange(CAN_FIRE_INSURANCE_COLUMN + oneSpaceRow).getValue(),
-        canBuyStock: boardDataSheet.getRange(CAN_BUY_STOCK_COLUMN + oneSpaceRow).getValue(),
-        stockValue: boardDataSheet.getRange(STOCK_VALUE_COLUMN + oneSpaceRow).getValue(),
-    }]
+    var spaceList: Space[] = [getSpace(userId, oneSpaceId)]
 
     return spaceList
+}
+
+/**
+ * コマを指定の位置へ動かし、指示を見るべきマスを返す
+ * @param userId ユーザーID
+ * @param spaceId 移動先
+ * @return Space型のマス
+ */
+function movePieceTo(userId: string, spaceId: number): Space {
+    //ユーザーのシートを手に入れる
+    var SpreadSheet = getSpreadSheet(userId);
+    // 個人のシートを取得
+    var personalDataSheet = SpreadSheet.getSheetByName(PERSONAL_DATA_SHEET_NAME);
+
+    // 駒の位置を更新
+    personalDataSheet.getRange(NOW_PLACE_RANGE).setValue(spaceId);
+    // 返す
+    var space: Space = getSpace(userId, spaceId);
+
+    return space;
+}
+
+
+
+/**
+ * マスの内容を手に入れられる
+ * @param userId ユーザーID
+ * @param spaceId マスのID
+ */
+function getSpace(userId:string, spaceId:number):Space{
+    //ユーザーのシートを手に入れる
+    var SpreadSheet = getSpreadSheet(userId);
+    // ボードシートを取得
+    var boardDataSheet = SpreadSheet.getSheetByName(BOARD_DATA_SHEET_NAME);
+    var spaceRow:number = spaceId+1;
+    var space:Space = {
+        id: boardDataSheet.getRange(SPACE_ID_COLUMN + spaceRow).getValue(),
+        content: boardDataSheet.getRange(SPACE_CONTENT_COLUMN + spaceRow).getValue(),
+        isGo: boardDataSheet.getRange(IS_GO_COLUMN + spaceRow).getValue(),
+        goNum: boardDataSheet.getRange(GO_NUM_COLUMN + spaceRow).getValue(),
+        isBack: boardDataSheet.getRange(IS_BACK_COLUMN + spaceRow).getValue(),
+        backNum: boardDataSheet.getRange(BACK_NUM_COLUMN + spaceRow).getValue(),
+        isStop: boardDataSheet.getRange(IS_STOP_COLUMN + spaceRow).getValue(),
+        stopTurn: boardDataSheet.getRange(STOP_TURN_COLUMN + spaceRow).getValue(),
+        isGet: boardDataSheet.getRange(IS_GET_MONEY_COLUMN + spaceRow).getValue(),
+        getNum: boardDataSheet.getRange(GET_MONEY_AMOUNT_COLUMN + spaceRow).getValue(),
+        isPay: boardDataSheet.getRange(IS_PAY_MONEY_COLUMN + spaceRow).getValue(),
+        payNum: boardDataSheet.getRange(PAY_MONEY_AMOUNT_COLUMN + spaceRow).getValue(),
+        isThroughAction: boardDataSheet.getRange(IS_THROUGH_ACTION_COLUMN + spaceRow).getValue(),
+        isMustStop: boardDataSheet.getRange(IS_MUST_STOP_SPACE_COLUMN + spaceRow).getValue(),
+        isPayDay: boardDataSheet.getRange(IS_PAY_DAY_COLUMN + spaceRow).getValue(),
+        isMarriage: boardDataSheet.getRange(IS_MARRIAGE_COLUMN + spaceRow).getValue(),
+        isBirthChild: boardDataSheet.getRange(IS_BIRTH_CHILD_COLUMN + spaceRow).getValue(),
+        childNum: boardDataSheet.getRange(CHILD_NUM_COLUMN + spaceRow).getValue(),
+        canBuyHouse: boardDataSheet.getRange(CAN_BUY_HOUSE_COLUMN + spaceRow).getValue(),
+        isLostHOuse: boardDataSheet.getRange(IS_LOST_HOUSE_COLUMN + spaceRow).getValue(),
+        canTakeLifeInsurance: boardDataSheet.getRange(CAN_LIFE_INSURANCE_COLUMN + spaceRow).getValue(),
+        canTakeFireInsurance: boardDataSheet.getRange(CAN_FIRE_INSURANCE_COLUMN + spaceRow).getValue(),
+        canBuyStock: boardDataSheet.getRange(CAN_BUY_STOCK_COLUMN + spaceRow).getValue(),
+        stockValue: boardDataSheet.getRange(STOCK_VALUE_COLUMN + spaceRow).getValue(),
+        canChooseWork: boardDataSheet.getRange(CAN_CHOOSE_WORK_COLUMN + spaceRow).getValue(),
+        choosableWorkId: boardDataSheet.getRange(CHOOSABLE_WORK_ID_COLUMN + spaceRow).getValue(),
+    }
+    return space;
 }
 
 /**
  * 指示に従ってステータスを変更したり、未確認マスの保存をする
  * @param space マス
  */
-function SpaceAction(space: Space):Object[]{
-    //アクション
-    //給料処理
-    //職業選択
-    //生命保険
-    //家
-    //火災保険
-    //株
-    //結婚
-    //出産
-    //お金変化
-    //進む
-    //戻る
-    //休み
-    //ゴール
+function SpaceAction(userId:string, space: Space):Object[]{
+    if (space.id >= GOAL_PLACE_NUMBER) {//ゴール
+        return [stringToMessage("ゴールです")];
+    }
 
-    //マスの内容
-    var placeMessage = getPlaceMessage(space);
-    return [placeMessage];
+    // 返信するメッセージ
+    var replyMessages:Object[] = [];
+
+    // マスの内容
+    var placeMessage:Object = getPlaceMessage(space);
+    replyMessages.push(placeMessage);
+
+    // アクション
+    if (space.isPayDay) { //給料処理
+        replyMessages.push(stringToMessage("給料日です"));
+    } else if (space.canChooseWork) {//職業選択
+        replyMessages.push(stringToMessage("職業に就くことができます"));
+        setChooseWork(userId, true);
+    } else if (space.canTakeLifeInsurance) {//生命保険
+        replyMessages.push(stringToMessage("生命保険に入ることができます"));
+        setLifeInsurance(userId, true);
+    } else if (space.canBuyHouse) {//家
+        replyMessages.push(stringToMessage("家を買うことができます"));
+        setChooseHouse(userId, true);
+    } else if (space.canTakeFireInsurance) {//火災保険
+        replyMessages.push(stringToMessage("火災保険に入れます"));
+        setFireInsurance(userId, true);
+    } else if (space.canBuyStock) {//株
+        replyMessages.push(stringToMessage("株を買うことができます"));
+        setStock(userId, true);
+    } else if (space.isMarriage) {//結婚
+        replyMessages.push(stringToMessage("結婚しました"));
+    } else if (space.isBirthChild) {//出産
+        replyMessages.push(stringToMessage("子供が生まれました"));
+    } else if (space.isGet) {//お金をもらう
+        replyMessages.push(stringToMessage("お金を" + space.getNum + "円手に入れました"));
+    } else if (space.isPay) {//お金を払う
+        replyMessages.push(stringToMessage("お金を" + space.payNum + "円支払いました"));
+    } else if (space.goNum) {//進む
+        replyMessages.push(stringToMessage(space.goNum + "マス進みます"));
+        //移動させて移動先のマスを取得
+        var newSpace: Space = movePieceTo(userId, space.id + space.goNum);
+        //移動アクションを実行
+        var afterMoveMeassage = SpaceAction(userId, newSpace);
+        //移動した結果のメッセージを送る
+        replyMessages = replyMessages.concat(afterMoveMeassage);
+    } else if (space.backNum) {//戻る
+        replyMessages.push(stringToMessage(space.backNum + "マス戻ります"));
+        //移動させて移動先のマスを取得
+        var newSpace: Space = movePieceTo(userId, space.id - space.backNum);
+        //移動アクションを実行
+        var afterMoveMeassage = SpaceAction(userId, newSpace);
+        //移動した結果のメッセージを送る
+        replyMessages = replyMessages.concat(afterMoveMeassage);
+    } else if (space.isStop) {//休み
+        replyMessages.push(stringToMessage(space.stopTurn + "ターン休みです"));
+        //動けない様に
+        setMovable(userId, false);
+    }
+    return replyMessages;
 }
 
 interface Space{
@@ -103,6 +179,8 @@ interface Space{
     canTakeFireInsurance: boolean;
     canBuyStock: boolean;
     stockValue: boolean;
+    canChooseWork: boolean;
+    choosableWorkId: boolean;
 }
 
 /**

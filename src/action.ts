@@ -95,18 +95,23 @@ function turnAction(userId: string, isCommand: CommandObj): Object[] {
   } else if (flag.isChooseWork) {
     //仕事につく
     replyMessages = startChooseWork(userId);
+    setChooseWork(userId,false);
   } else if (flag.isChooseHouse) {
     //家を選ぶ
     replyMessages = startChooseHouse(userId);
+    setChooseHouse(userId, false);
   } else if (flag.isFireInsurance) {
     //火災保険
     replyMessages = startTakeFireInsurance(userId);
+    setFireInsurance(userId, false);
   } else if (flag.isLifeInsurance) {
     //生命保険
     replyMessages = startTakeLifeInsurance(userId);
+    setLifeInsurance(userId, false);
   } else if (flag.isStock) {
     //株
     replyMessages = startStock(userId);
+    setStock(userId, false);
   } else if (isCommand.isDebt) {//各コマンド
     //借金をしたい
     replyMessages = confirmBorrowDebt(userId);
@@ -177,7 +182,7 @@ function moveAction(userId: string): Object[] {
 
   // リストの要素毎にアクション
   for (let i = 0; i < pieceList.length; i++) {
-    var placeMessages: Object[] = SpaceAction(pieceList[i]);
+    var placeMessages: Object[] = SpaceAction(userId, pieceList[i]);
     replyMessages = replyMessages.concat(placeMessages);
   }
 
