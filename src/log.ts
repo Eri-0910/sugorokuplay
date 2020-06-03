@@ -28,7 +28,8 @@ function makeLog(error) {
  * URLFetchの レスポンスをログとして残す
  * @param response
  */
-function makeResponceLog(response) {
+function makeResponceLog(response: GoogleAppsScript.URL_Fetch.HTTPResponse) {
+  if (response.getResponseCode()==200){return;}
   //エラーログシートを手に入れる
   var SpreadSheet = SpreadsheetApp.openById(ERROR_LOG_ID);
   // これでログ保存のシートを取得
