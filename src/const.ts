@@ -18,14 +18,15 @@ const WORK_DATA_SHEET_NAME = "職業データ";
 const NOW_PLACE_RANGE = 'B1';
 const MONEY_RANGE = 'B2';
 const DEBT_RANGE = "B3";
-const WORK_RANGE = "B4";
-const SARALY_RANGE = "B5";
-const HAS_HOUSE_RANGE = "B6";
-const HOUSE_MONEY_RANGE = "B7";
-const HAS_PARTNER_RANGE = "B8";
-const CHIRD_NUM_RANGE = "B9";
-const IN_FIRE_INSURANCE_RANGE = "B10";
-const IN_LIFE_INSURANCE_RANGE = "B11";
+const STOCK_RANGE = "B4";
+const WORK_RANGE = "B5";
+const SARALY_RANGE = "B6";
+const HAS_HOUSE_RANGE = "B7";
+const HOUSE_MONEY_RANGE = "B8";
+const HAS_PARTNER_RANGE = "B9";
+const CHIRD_NUM_RANGE = "B10";
+const IN_FIRE_INSURANCE_RANGE = "B11";
+const IN_LIFE_INSURANCE_RANGE = "B12";
 const IS_MOVABLE_RANGE = 'B13';
 
 // ゲームデータ
