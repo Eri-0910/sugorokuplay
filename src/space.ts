@@ -100,6 +100,12 @@ function SpaceAction(userId:string, space: Space):Object[]{
     // 返信するメッセージ
     var replyMessages:Object[] = [];
 
+    //ユーザーのシートを手に入れる
+    var SpreadSheet = getSpreadSheet(userId);
+    // 個人のシートを取得
+    var personalDataSheet = SpreadSheet.getSheetByName(PERSONAL_DATA_SHEET_NAME);
+
+
     // マスの内容
     var placeMessage:Object = getPlaceMessage(space);
     replyMessages.push(placeMessage);
@@ -124,12 +130,26 @@ function SpaceAction(userId:string, space: Space):Object[]{
         setStock(userId, true);
     } else if (space.isMarriage) {//結婚
         replyMessages.push(stringToMessage("結婚しました"));
+
     } else if (space.isBirthChild) {//出産
         replyMessages.push(stringToMessage("子供が生まれました"));
+
     } else if (space.isGet) {//お金をもらう
+        //今の所持金
+        var nowMoney = personalDataSheet.getRange(MONEY_RANGE).getValue();
+        //変化させる
+        personalDataSheet.getRange(MONEY_RANGE).setValue(nowMoney + space.getNum);
+
         replyMessages.push(stringToMessage("お金を" + space.getNum + "円手に入れました"));
+
     } else if (space.isPay) {//お金を払う
+        //今の所持金
+        var nowMoney = personalDataSheet.getRange(MONEY_RANGE).getValue();
+        //変化させる
+        personalDataSheet.getRange(MONEY_RANGE).setValue(nowMoney - space.payNum);
+
         replyMessages.push(stringToMessage("お金を" + space.payNum + "円支払いました"));
+
     } else if (space.goNum) {//進む
         replyMessages.push(stringToMessage(space.goNum + "マス進みます"));
         //移動させて移動先のマスを取得
@@ -138,6 +158,7 @@ function SpaceAction(userId:string, space: Space):Object[]{
         var afterMoveMeassage = SpaceAction(userId, newSpace);
         //移動した結果のメッセージを送る
         replyMessages = replyMessages.concat(afterMoveMeassage);
+
     } else if (space.backNum) {//戻る
         replyMessages.push(stringToMessage(space.backNum + "マス戻ります"));
         //移動させて移動先のマスを取得
@@ -146,6 +167,7 @@ function SpaceAction(userId:string, space: Space):Object[]{
         var afterMoveMeassage = SpaceAction(userId, newSpace);
         //移動した結果のメッセージを送る
         replyMessages = replyMessages.concat(afterMoveMeassage);
+
     } else if (space.isStop) {//休み
         replyMessages.push(stringToMessage(space.stopTurn + "ターン休みです"));
         //動けない様に
