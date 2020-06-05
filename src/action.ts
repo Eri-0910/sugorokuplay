@@ -85,33 +85,61 @@ function turnAction(userId: string, isCommand: CommandObj): Object[] {
   //フラグの確認
   var flag: Flag = getFlag(userId);
   if (flag.isRepayDebt) {//フラグアクション
-    //借金を返す
-    replyMessages = repayDebt(userId);
-    setRepayDebt(userId, false);
+    if(isCommand.isYes||isCommand.isNo){
+      //借金を返す
+      replyMessages = repayDebt(userId, 0);
+    } else {
+      //選択されていない
+      replyMessages = [stringToMessage('借金を返す場合は金額を、返さない場合は0と入力してください')];
+    }
   } else if (flag.isBorrowDebt) {
-    //借金を借りる
-    replyMessages = borrowDebt(userId);
-    setBorrowDebt(userId, false);
+    if (isCommand.isYes || isCommand.isNo) {
+      //借金を借りる
+      replyMessages = borrowDebt(userId, true);
+    } else {
+      //選択されていない
+      replyMessages = [stringToMessage('借金を借りる場合ははい、借りない場合はいいえと入力してください')];
+    }
   } else if (flag.isChooseWork) {
-    //仕事につく
-    replyMessages = startChooseWork(userId);
-    setChooseWork(userId,false);
+    if (isCommand.isYes || isCommand.isNo) {
+      //仕事につく
+      replyMessages = startChooseWork(userId, 0);
+    } else {
+      //選択されていない
+      replyMessages = [stringToMessage('仕事に就く場合ははい、就かない場合はいいえと入力してください')];
+    }
   } else if (flag.isChooseHouse) {
-    //家を選ぶ
-    replyMessages = startChooseHouse(userId);
-    setChooseHouse(userId, false);
+    if (isCommand.isYes || isCommand.isNo) {
+      //家を選ぶ
+      replyMessages = startChooseHouse(userId, 0);
+    } else {
+      //選択されていない
+      replyMessages = [stringToMessage('家を選ぶ場合は番号を、選ばない場合は0と入力してください')];
+    }
   } else if (flag.isFireInsurance) {
-    //火災保険
-    replyMessages = startTakeFireInsurance(userId);
-    setFireInsurance(userId, false);
+    if (isCommand.isYes || isCommand.isNo) {
+      //火災保険
+      replyMessages = startTakeFireInsurance(userId, true);
+    } else {
+      //選択されていない
+      replyMessages = [stringToMessage('火災保険に入る場合ははい、入らない場合はいいえと入力してください')];
+    }
   } else if (flag.isLifeInsurance) {
+    if (isCommand.isYes || isCommand.isNo) {
+      replyMessages = startTakeLifeInsurance(userId, true);
+    } else {
+      //選択されていない
+      replyMessages = [stringToMessage('生命保険に入る場合ははい、入らない場合はいいえと入力してください')];
+    }
     //生命保険
-    replyMessages = startTakeLifeInsurance(userId);
-    setLifeInsurance(userId, false);
   } else if (flag.isStock) {
-    //株
-    replyMessages = startStock(userId);
-    setStock(userId, false);
+    if (isCommand.isYes || isCommand.isNo) {
+      //株
+      replyMessages = startStock(userId, true);
+    } else {
+      //選択されていない
+      replyMessages = [stringToMessage('株を買う場合ははい、買わない場合はいいえと入力してください')];
+    }
   } else if (isCommand.isDebt) {//各コマンド
     //借金をしたい
     replyMessages = confirmBorrowDebt(userId);
@@ -137,32 +165,40 @@ function turnAction(userId: string, isCommand: CommandObj): Object[] {
   return replyMessages;
 }
 
-function borrowDebt(userId: string): Object[] {
+function repayDebt(userId: string, repaymentAmount: number): Object[] {
+  setRepayDebt(userId, false);
+  return [stringToMessage("借金を返します")];
+}
+
+
+function borrowDebt(userId: string, doAction: boolean): Object[] {
+  setBorrowDebt(userId, false);
   return [stringToMessage("借金をかります")];
 }
 
-function startStock(userId: string): Object[] {
+function startStock(userId: string, doAction: boolean): Object[] {
+  setStock(userId, false);
   return [stringToMessage("株を買います")];
 }
 
-function startTakeLifeInsurance(userId: string): Object[] {
+function startTakeLifeInsurance(userId: string, doAction: boolean): Object[] {
+  setLifeInsurance(userId, false);
   return [stringToMessage('生命保険に入ります')];
 }
 
-function startTakeFireInsurance(userId: string): Object[] {
+function startTakeFireInsurance(userId: string, doAction: boolean): Object[] {
+  setFireInsurance(userId, false);
   return [stringToMessage("火災保険に入ります")];
 }
 
-function startChooseHouse(userId: string): Object[] {
+function startChooseHouse(userId: string, houseId: number): Object[] {
+  setChooseHouse(userId, false);
   return [stringToMessage("家を選びます")];
 }
 
-function startChooseWork(userId: string): Object[] {
+function startChooseWork(userId: string, workId: number): Object[] {
+  setChooseWork(userId, false);
   return [stringToMessage("仕事につきます")];
-}
-
-function repayDebt(userId: string): Object[] {
-  return [stringToMessage("借金を返します")];
 }
 
 function moveAction(userId: string): Object[] {

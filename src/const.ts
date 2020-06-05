@@ -96,4 +96,6 @@ const NEXT_COMMNAD_LIST = ['次へ'];
 const HELP_COMMNAD_LIST = ['ヘルプ'];
 const DEBT_COMMNAD_LIST = ["借金する"];
 const REPAY_DEBT_COMMNAD_LIST = ["借金を返す"];
+const YES_COMMNAD_LIST = ["はい", "Yes"];
+const NO_COMMNAD_LIST = ["いいえ", "No"];
 

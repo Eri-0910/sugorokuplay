@@ -1,11 +1,11 @@
 /**
  * 借金をする確認を出す
  * @param {string} userId ユーザーID
- * @returns {string[]} 出力したいッセージ
+ * @returns {Object[]} 出力したいッセージ
  */
-function confirmBorrowDebt(userId: string): string[] {
-  var replyMessages: string[];
-  replyMessages = ["借金しますか？"];
+function confirmBorrowDebt(userId: string): Object[] {
+  var replyMessages: Object[];
+  replyMessages = [stringToMessage("借金しますか？")];
   // フラグ
   setBorrowDebt(userId, true);
   return replyMessages;
@@ -16,9 +16,9 @@ function confirmBorrowDebt(userId: string): string[] {
  * @param {string} userId ユーザーID
  * @returns {string[]} 出力したいッセージ
  */
-function confirmRepayDebt(userId: string): string[] {
-  var replyMessages: string[];
-  replyMessages = ["返金金額を入力してください"];
+function confirmRepayDebt(userId: string): Object[] {
+  var replyMessages: Object[];
+  replyMessages = [stringToMessage("返金金額を入力してください")];
   // フラグ
   setRepayDebt(userId, true);
   return replyMessages;
