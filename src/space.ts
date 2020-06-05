@@ -129,10 +129,18 @@ function SpaceAction(userId:string, space: Space):Object[]{
         replyMessages.push(stringToMessage("株を買うことができます"));
         setStock(userId, true);
     } else if (space.isMarriage) {//結婚
+        //変化させる
+        personalDataSheet.getRange(HAS_PARTNER_RANGE).setValue(1);
+
         replyMessages.push(stringToMessage("結婚しました"));
 
     } else if (space.isBirthChild) {//出産
-        replyMessages.push(stringToMessage("子供が生まれました"));
+        //今の子供の数
+        var nowChildNum = personalDataSheet.getRange(CHIRD_NUM_RANGE).getValue();
+        //変化させる
+        personalDataSheet.getRange(CHIRD_NUM_RANGE).setValue(nowChildNum + space.childNum);
+
+        replyMessages.push(stringToMessage("子供が生まれました。現在の子供の数は" + (nowChildNum + space.childNum) + "人です"));
 
     } else if (space.isGet) {//お金をもらう
         //今の所持金
