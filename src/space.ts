@@ -145,10 +145,22 @@ function SpaceAction(userId:string, space: Space):Object[]{
     } else if (space.isPay) {//お金を払う
         //今の所持金
         var nowMoney = personalDataSheet.getRange(MONEY_RANGE).getValue();
-        //変化させる
-        personalDataSheet.getRange(MONEY_RANGE).setValue(nowMoney - space.payNum);
+        var newMoney = nowMoney - space.payNum;
+        if (newMoney < 0){
+            var debt = Math.ceil(Math.abs(newMoney)/10000) * 10000;
+            var nowDebt = personalDataSheet.getRange(DEBT_RANGE).getValue();
+            personalDataSheet.getRange(DEBT_RANGE).setValue(nowDebt + debt);
+            var debtAdded = newMoney + debt;
+            //変化させる
+            personalDataSheet.getRange(MONEY_RANGE).setValue(debtAdded);
+            replyMessages.push(stringToMessage("お金を" + space.payNum + "円支払いました"));
+            replyMessages.push(stringToMessage("金額が不足したため、" + debt + "円借金しました(現在借金" + (nowDebt + debt) + "円、所持金" + debtAdded + "円)"));
 
-        replyMessages.push(stringToMessage("お金を" + space.payNum + "円支払いました"));
+        }else{
+            //変化させる
+            personalDataSheet.getRange(MONEY_RANGE).setValue(newMoney);
+            replyMessages.push(stringToMessage("お金を" + space.payNum + "円支払いました(現在" + newMoney + "円)"));
+        }
 
     } else if (space.goNum) {//進む
         replyMessages.push(stringToMessage(space.goNum + "マス進みます"));
