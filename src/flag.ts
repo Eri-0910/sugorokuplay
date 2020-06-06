@@ -60,17 +60,20 @@ function setBorrowDebt(userId: string, isBorrow: boolean) {
 }
 
 /**
+ * 
  * 職業選択フラグを変更する
  * @param userId ユーザーID
  * @param isChooseWork 職業選択に入ったらtrue
+ * @param workId つける職業のID
  */
-function setChooseWork(userId: string, isChooseWork: boolean) {
+function setChooseWork(userId: string, isChooseWork: boolean, workId?:number) {
   //ユーザーのシートを手に入れる
   var SpreadSheet = getSpreadSheet(userId);
   // これでフラグの載っているのシートを取得
   var gameSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
   //フラグをセット
   gameSheet.getRange(CHOOSE_WORK_FLAG_RANGE).setValue(Number(isChooseWork));
+  gameSheet.getRange(CAN_CHOOSE_WORK_ID_RANGE).setValue(workId);
 }
 
 /**

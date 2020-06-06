@@ -392,7 +392,7 @@ function startChooseWork(userId: string, doAction: boolean): Object[] {
     // 職業のシートを取得
     var workSheet = SpreadSheet.getSheetByName(WORK_DATA_SHEET_NAME);
     // 今選べる職業
-    var workId: number = gameSheet.getRange(CHOOSABLE_WORK_ID_COLUMN).getValue();
+    var workId: number = gameSheet.getRange(CAN_CHOOSE_WORK_ID_RANGE).getValue();
     // その職業の給料
     var saraly = workSheet.getRange(BASE_SARALY_COLUMN + (workId+1)).getValue();
     // その職業の名前
