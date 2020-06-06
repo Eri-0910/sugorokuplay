@@ -38,10 +38,12 @@ const NOW_USER_RANGE = "J1";
 const REPAY_DEBT_FLAG_RANGE = "J2";
 const BORROW_DEBT_FLAG_RANGE = "J3";
 const CHOOSE_WORK_FLAG_RANGE = "J4";
+const CAN_CHOOSE_WORK_ID_RANGE = "J8"
 const LIFE_INSURANCE_FLAG_RANGE = "J5";
 const CHOOSE_HOUSE_FLAG_RANGE = "J6";
 const FIRE_INSURANCE_FLAG_RANGE = "J7";
 const STOCK_FLAG_RANGE = "J8";
+const STOCK_VALUE_RANGE = "K8"
 
 // ボードデータ
 const SPACE_ID_COLUMN = "A";
@@ -99,3 +101,6 @@ const REPAY_DEBT_COMMNAD_LIST = ["借金を返す"];
 const YES_COMMNAD_LIST = ["はい", "Yes"];
 const NO_COMMNAD_LIST = ["いいえ", "No"];
 
+//その他
+const LIFE_INSURANCE_VALUE = 3000;
+const FIRE_INSURANCE_VALUE = 3000;
