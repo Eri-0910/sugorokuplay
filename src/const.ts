@@ -18,14 +18,15 @@ const WORK_DATA_SHEET_NAME = "職業データ";
 const NOW_PLACE_RANGE = 'B1';
 const MONEY_RANGE = 'B2';
 const DEBT_RANGE = "B3";
-const WORK_RANGE = "B4";
-const SARALY_RANGE = "B5";
-const HAS_HOUSE_RANGE = "B6";
-const HOUSE_MONEY_RANGE = "B7";
-const HAS_PARTNER_RANGE = "B8";
-const CHIRD_NUM_RANGE = "B9";
-const IN_FIRE_INSURANCE_RANGE = "B10";
-const IN_LIFE_INSURANCE_RANGE = "B11";
+const STOCK_RANGE = "B4";
+const WORK_RANGE = "B5";
+const SARALY_RANGE = "B6";
+const HAS_HOUSE_RANGE = "B7";
+const HOUSE_MONEY_RANGE = "B8";
+const HAS_PARTNER_RANGE = "B9";
+const CHIRD_NUM_RANGE = "B10";
+const IN_FIRE_INSURANCE_RANGE = "B11";
+const IN_LIFE_INSURANCE_RANGE = "B12";
 const IS_MOVABLE_RANGE = 'B13';
 
 // ゲームデータ
@@ -37,10 +38,12 @@ const NOW_USER_RANGE = "J1";
 const REPAY_DEBT_FLAG_RANGE = "J2";
 const BORROW_DEBT_FLAG_RANGE = "J3";
 const CHOOSE_WORK_FLAG_RANGE = "J4";
+const CAN_CHOOSE_WORK_ID_RANGE = "K4"
 const LIFE_INSURANCE_FLAG_RANGE = "J5";
 const CHOOSE_HOUSE_FLAG_RANGE = "J6";
 const FIRE_INSURANCE_FLAG_RANGE = "J7";
 const STOCK_FLAG_RANGE = "J8";
+const STOCK_VALUE_RANGE = "K8"
 
 // ボードデータ
 const SPACE_ID_COLUMN = "A";
@@ -95,4 +98,9 @@ const NEXT_COMMNAD_LIST = ['次へ'];
 const HELP_COMMNAD_LIST = ['ヘルプ'];
 const DEBT_COMMNAD_LIST = ["借金する"];
 const REPAY_DEBT_COMMNAD_LIST = ["借金を返す"];
+const YES_COMMNAD_LIST = ["はい", "Yes"];
+const NO_COMMNAD_LIST = ["いいえ", "No"];
 
+//その他
+const LIFE_INSURANCE_VALUE = 3000;
+const FIRE_INSURANCE_VALUE = 3000;

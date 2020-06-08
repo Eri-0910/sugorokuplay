@@ -68,6 +68,10 @@ interface CommandObj {
     isStatus: boolean;
     isDebt: boolean;
     isRepay: boolean;
+    isYes: boolean;
+    isNo: boolean;
+    value: number|null;
+    id: number|null
 }
 
 /**
@@ -92,6 +96,33 @@ function commandParser(str: string): CommandObj{
     var isDebtCommand = DEBT_COMMNAD_LIST.includes(str);
     //借金返金コマンドかどうか
     var isRepayCommand = REPAY_DEBT_COMMNAD_LIST.includes(str);
+  //借金コマンドかどうか
+  var isYesCommand = YES_COMMNAD_LIST.includes(str);
+  //借金返金コマンドかどうか
+  var isNoCommand = NO_COMMNAD_LIST.includes(str);
+
+  // 最後に円があったりなかったり
+  var valuePattern = /^\d+円?$/;
+  // 前から数字部分だけ取ってくる
+  var valueOnlyNumberPattern = /^\d+/;
+  //　数字だけ
+  var idPattern = /^\d+$/;
+
+  var value: number|null;
+  if (valuePattern == null) {
+    value = null;
+  } else {
+    value = Number(str.match(valueOnlyNumberPattern));
+  }
+
+  var id:number|null;
+  if (str.match(idPattern) == null){
+    id =null;
+  }else{
+    id = Number(str.match(idPattern));
+  }
+
+
     //返すもの
     var isCommand: CommandObj = {
       isStart: isStartCommand,
@@ -102,6 +133,10 @@ function commandParser(str: string): CommandObj{
       isStatus: isStatusCommand,
       isDebt: isDebtCommand,
       isRepay: isRepayCommand,
+      isYes: isYesCommand,
+      isNo: isNoCommand,
+      value: value,
+      id: id
     };
     return isCommand;
 }
