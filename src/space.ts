@@ -180,19 +180,21 @@ function SpaceAction(userId: string, space: Space): Object[] {
         replyMessages.push(stringToMessage("お金を" + space.getNum + "円手に入れました"));
 
     } else if (space.isPay) {//お金を払う
-        //今の所持金
-        var nowMoney: number = personalDataSheet.getRange(MONEY_RANGE).getValue();
+        //今の所持金、借金をまとめて読み出し
+        var readData: number[][] = personalDataSheet.getRange(2,2,3,2).getValues();
+        var nowMoney: number = readData[0][0];
+        var nowDebt: number = readData[1][0];
         var newMoney: number = nowMoney - space.payNum;
         if (newMoney < 0) {
             var debt: number = Math.ceil(Math.abs(newMoney) / 10000) * 10000;
-            var nowDebt: number = personalDataSheet.getRange(DEBT_RANGE).getValue();
-            personalDataSheet.getRange(DEBT_RANGE).setValue(nowDebt + debt);
-            var debtAdded: number = newMoney + debt;
+            var newDebt = nowDebt + debt
+            var debtAddedMoney: number = newMoney + debt;
             //変化させる
-            personalDataSheet.getRange(MONEY_RANGE).setValue(debtAdded);
+            var writeData = [[debtAddedMoney], [newDebt]];
+            personalDataSheet.getRange(2, 2, 3, 2).setValues(writeData);
+            // メッセージ
             replyMessages.push(stringToMessage("お金を" + space.payNum + "円支払いました"));
-            replyMessages.push(stringToMessage("金額が不足したため、" + debt + "円借金しました(現在借金" + (nowDebt + debt) + "円、所持金" + debtAdded + "円)"));
-
+            replyMessages.push(stringToMessage("金額が不足したため、" + debt + "円借金しました(現在借金" + newDebt + "円、所持金" + debtAddedMoney + "円)"));
         } else {
             //変化させる
             personalDataSheet.getRange(MONEY_RANGE).setValue(newMoney);
