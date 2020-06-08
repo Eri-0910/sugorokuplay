@@ -18,15 +18,18 @@ function getFlag(userId: string): Flag {
   var SpreadSheet = getSpreadSheet(userId);
   // これでフラグの載っているのシートを取得
   var gameSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
+  // 配列にして一気に読み出す
+  var readData: any = gameSheet.getRange(2, 10, 7, 1).getValues();
+
   // フラグの確認
   var flag: Flag = {
-    isRepayDebt: gameSheet.getRange(REPAY_DEBT_FLAG_RANGE).getValue(),
-    isBorrowDebt: gameSheet.getRange(BORROW_DEBT_FLAG_RANGE).getValue(),
-    isChooseWork: gameSheet.getRange(CHOOSE_WORK_FLAG_RANGE).getValue(),
-    isLifeInsurance: gameSheet.getRange(LIFE_INSURANCE_FLAG_RANGE).getValue(),
-    isFireInsurance: gameSheet.getRange(FIRE_INSURANCE_FLAG_RANGE).getValue(),
-    isChooseHouse: gameSheet.getRange(CHOOSE_HOUSE_FLAG_RANGE).getValue(),
-    isStock: gameSheet.getRange(STOCK_FLAG_RANGE).getValue(),
+    isRepayDebt: readData[0][0],
+    isBorrowDebt: readData[1][0],
+    isChooseWork: readData[2][0],
+    isLifeInsurance: readData[3][0],
+    isChooseHouse: readData[4][0],
+    isFireInsurance: readData[5][0],
+    isStock: readData[6][0],
   };
   return flag;
 }

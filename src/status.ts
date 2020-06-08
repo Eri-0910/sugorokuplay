@@ -1,16 +1,17 @@
-function statusAction(userId):Object[]{
+function statusAction(userId: string):Object[]{
     //ユーザーのシートを手に入れる
     var SpreadSheet = getSpreadSheet(userId);
     // ユーザーのシートを取得
     var personSheet = SpreadSheet.getSheetByName(PERSONAL_DATA_SHEET_NAME);
+    var readDatas = personSheet.getRange(2,2,11,2).getValues();
     //金額
-    var nowMoney: string = personSheet.getRange(MONEY_RANGE).getValue() + '円';
+    var nowMoney: string = readDatas[0][0] + '円';
     //借金額
-    var nowDebt: string = personSheet.getRange(DEBT_RANGE).getValue() + '円';
+    var nowDebt: string = readDatas[1][0] + '円';
     //株
-    var nowStock: string = personSheet.getRange(STOCK_RANGE).getValue() + '株';
+    var nowStock: string = readDatas[2][0] + '株';
     //仕事関連
-    var nowWorkID = personSheet.getRange(WORK_RANGE).getValue();
+    var nowWorkID = readDatas[3][0];
     var nowWork: string = "";
     if (nowWorkID == 0) {
         nowWork = "無職";
@@ -19,16 +20,16 @@ function statusAction(userId):Object[]{
         nowWork = workSheet.getRange(WORK_NAME_COLUMN + (nowWorkID+1)).getValue();
     }
     //家関連
-    var nowHaveHouse = personSheet.getRange(HAS_HOUSE_RANGE).getValue();
+    var nowHaveHouse = readDatas[5][0];
     var houseValue: string = 'なし';
     if (nowHaveHouse) {
-        houseValue = personSheet.getRange(HOUSE_MONEY_RANGE).getValue() + '円';
+        houseValue = readDatas[6][0] + '円';
     }
     //結婚している
-    var nowHasPartner: string = (personSheet.getRange(HAS_PARTNER_RANGE).getValue() == 1)　?　"あり"　:　"なし";
-    var nowChild: string = personSheet.getRange(CHIRD_NUM_RANGE).getValue() + "人";
-    var nowLifeInsurance: string = (personSheet.getRange(IN_LIFE_INSURANCE_RANGE).getValue() == 1) ? "加入" : "未加入";
-    var nowFireInsurance: string = (personSheet.getRange(IN_FIRE_INSURANCE_RANGE).getValue() == 1) ? "加入" : "未加入";
+    var nowHasPartner: string = (readDatas[7][0] == 1)　?　"あり"　:　"なし";
+    var nowChild: string = readDatas[8][0] + "人";
+    var nowLifeInsurance: string = (readDatas[10][0] == 1) ? "加入" : "未加入";
+    var nowFireInsurance: string = (readDatas[9][0] == 1) ? "加入" : "未加入";
 
     var altText = '現在のステータスです。\n 所持金:' + nowMoney + '\n 借金:' + nowDebt + '\n 仕事:' + nowWork + '\n 配偶者:' + nowHasPartner + '\n 子供:' + nowChild + '\n 生命保険:' + nowLifeInsurance + '\n 火災保険:' + nowFireInsurance + '\n 株:' + nowStock;
 
