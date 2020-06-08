@@ -14,7 +14,15 @@ function movePiece(userId: string, num: number): Space[] {
     var startPlace: number = personalDataSheet.getRange(NOW_PLACE_RANGE).getValue();
 
     // 1マスずつみる
-    var oneSpaceId: number = startPlace + num;
+    for (let i = 0; i < num; i++) {
+        var oneSpaceId: number = startPlace + num;
+        // ボードシートを取得
+        var boardDataSheet = SpreadSheet.getSheetByName(BOARD_DATA_SHEET_NAME);
+        var oneSpaceRow: number = oneSpaceId + 1;
+        
+    // TODO #2　配列内の数字をCONSTにする
+
+    }
     // やるべきマスのリストを取得
     // 駒の位置を更新
     personalDataSheet.getRange(NOW_PLACE_RANGE).setValue(startPlace + num);
@@ -44,49 +52,70 @@ function movePieceTo(userId: string, spaceId: number): Space {
     return space;
 }
 
-
-
 /**
- * マスの内容を手に入れられる
+ * 開始点から指定された数ののマスのデータを取得しリストを返す
  * @param userId ユーザーID
- * @param spaceId マスのID
+ * @param spaceId 開始点となるマスのID
+ * @param num 取得したいマスの数
  */
-function getSpace(userId: string, spaceId: number): Space {
+function getSpaceRange(userId: string, spaceId: number, num: number): Space[] {
+    var spaceList: Space[] = [];
     //ユーザーのシートを手に入れる
     var SpreadSheet = getSpreadSheet(userId);
     // ボードシートを取得
     var boardDataSheet = SpreadSheet.getSheetByName(BOARD_DATA_SHEET_NAME);
-    var spaceRow: number = spaceId + 1;
+    var startSpaceRow = spaceId + 1;
     // 配列にして一気に読み出す
-    var readData:any = boardDataSheet.getRange(spaceRow, BOARD_DATA_START_COLUMN, 1, BOARD_DATA_COLUMN_NUM).getValues();
+    var readData: any = boardDataSheet.getRange(startSpaceRow, BOARD_DATA_START_COLUMN, num, BOARD_DATA_COLUMN_NUM).getValues();
+    for (let i = 0; i < num; i++) {
+        spaceList.push(getSpaceByArray(readData[i]));
+    }
+    return spaceList
+}
+
+/**
+ * 1マスの内容を手に入れられる
+ * @param userId ユーザーID
+ * @param spaceId マスのID
+ */
+function getSpace(userId: string, spaceId: number): Space {
+    var spaceList: Space[] = getSpaceRange(userId, spaceId, 1);
+    return spaceList[0];
+}
+
+/**
+ * 配列からマスの内容を手に入れられる
+ * @param spaceId マスのID
+ */
+function getSpaceByArray(spaceArray: any[]): Space {
     // TODO #2　配列内の数字をCONSTにする
     var space: Space = {
-        id: readData[0][0],
-        content: readData[0][1],
-        isGo: readData[0][2],
-        goNum: readData[0][3],
-        isBack: readData[0][4],
-        backNum: readData[0][5],
-        isStop: readData[0][6],
-        stopTurn: readData[0][7],
-        isGet: readData[0][8],
-        getNum: readData[0][9],
-        isPay: readData[0][10],
-        payNum: readData[0][11],
-        isThroughAction: readData[0][12],
-        isMustStop: readData[0][13],
-        isPayDay: readData[0][14],
-        isMarriage: readData[0][15],
-        isBirthChild: readData[0][16],
-        childNum: readData[0][17],
-        canBuyHouse: readData[0][18],
-        isLostHOuse: readData[0][19],
-        canTakeLifeInsurance: readData[0][20],
-        canTakeFireInsurance: readData[0][21],
-        canBuyStock: readData[0][22],
-        stockValue: readData[0][23],
-        canChooseWork: readData[0][24],
-        choosableWorkId: readData[0][25],
+        id: spaceArray[0],
+        content: spaceArray[1],
+        isGo: spaceArray[2],
+        goNum: spaceArray[3],
+        isBack: spaceArray[4],
+        backNum: spaceArray[5],
+        isStop: spaceArray[6],
+        stopTurn: spaceArray[7],
+        isGet: spaceArray[8],
+        getNum: spaceArray[9],
+        isPay: spaceArray[10],
+        payNum: spaceArray[11],
+        isThroughAction: spaceArray[12],
+        isMustStop: spaceArray[13],
+        isPayDay: spaceArray[14],
+        isMarriage: spaceArray[15],
+        isBirthChild: spaceArray[16],
+        childNum: spaceArray[17],
+        canBuyHouse: spaceArray[18],
+        isLostHOuse: spaceArray[19],
+        canTakeLifeInsurance: spaceArray[20],
+        canTakeFireInsurance: spaceArray[21],
+        canBuyStock: spaceArray[22],
+        stockValue: spaceArray[23],
+        canChooseWork: spaceArray[24],
+        choosableWorkId: spaceArray[25],
     }
     return space;
 }
