@@ -13,23 +13,22 @@ function movePiece(userId: string, num: number): Space[] {
     // 現在位置を取得
     var startPlace: number = personalDataSheet.getRange(NOW_PLACE_RANGE).getValue();
 
+    var spaceList = getSpaceRange(userId, startPlace+1, num);
+
+    var returnSpaceList: Space[] = [];
+
     // 1マスずつみる
-    for (let i = 0; i < num; i++) {
-        var oneSpaceId: number = startPlace + num;
-        // ボードシートを取得
-        var boardDataSheet = SpreadSheet.getSheetByName(BOARD_DATA_SHEET_NAME);
-        var oneSpaceRow: number = oneSpaceId + 1;
-        
-    // TODO #2　配列内の数字をCONSTにする
-
+    for (let i = 1; i <= num; i++) {
+        var space: Space = spaceList[i-1];
+        if (i == num || space.isMustStop){//最後のマスorストップマスならそこで終わる
+            personalDataSheet.getRange(NOW_PLACE_RANGE).setValue(startPlace + i);
+            returnSpaceList.push(space);
+            break;
+        } else if (space.isThroughAction) {//通過指示マスなら追加して先を見る
+            returnSpaceList.push(space);
+        }
     }
-    // やるべきマスのリストを取得
-    // 駒の位置を更新
-    personalDataSheet.getRange(NOW_PLACE_RANGE).setValue(startPlace + num);
-    // 返す
-    var spaceList: Space[] = [getSpace(userId, oneSpaceId)]
-
-    return spaceList
+    return returnSpaceList
 }
 
 /**
