@@ -115,7 +115,7 @@ function turnAction(userId: string, isCommand: CommandObj): Object[] {
   } else if (flag.isChooseWork) {
     if (isCommand.isYes || isCommand.isNo) {
       //仕事につく
-      replyMessages = startChooseWork(userId, true);
+      replyMessages = startChooseWork(userId, isCommand.isYes);
       //残っているマスのリストを取得
       var spaceList: Space[] = loadSpace(userId);
       // リストの要素毎にアクション
