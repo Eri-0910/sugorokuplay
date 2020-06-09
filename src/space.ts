@@ -183,7 +183,8 @@ function SpaceAction(userId: string, space: Space): Object[] {
 
     } else if (space.canBuyStock) {//株
         replyMessages.push(stringToMessage("株を買うことができます。買いますか？"));
-        setStock(userId, true);
+        var stockValue = space.stockValue;
+        setStock(userId, true, stockValue);
 
     } else if (space.isMarriage) {//結婚
         //変化させる
@@ -279,7 +280,7 @@ interface Space {
     canTakeLifeInsurance: boolean;
     canTakeFireInsurance: boolean;
     canBuyStock: boolean;
-    stockValue: boolean;
+    stockValue: number;
     canChooseWork: boolean;
     choosableWorkId: number;
 }
