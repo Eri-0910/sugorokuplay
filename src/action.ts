@@ -115,7 +115,7 @@ function turnAction(userId: string, isCommand: CommandObj): Object[] {
   } else if (flag.isChooseWork) {
     if (isCommand.isYes || isCommand.isNo) {
       //仕事につく
-      replyMessages = startChooseWork(userId, true);
+      replyMessages = startChooseWork(userId, isCommand.isYes);
       //残っているマスのリストを取得
       var spaceList: Space[] = loadSpace(userId);
       // リストの要素毎にアクション
@@ -143,7 +143,7 @@ function turnAction(userId: string, isCommand: CommandObj): Object[] {
   } else if (flag.isFireInsurance) {
     if (isCommand.isYes || isCommand.isNo) {
       //火災保険
-      replyMessages = startTakeFireInsurance(userId, true);
+      replyMessages = startTakeFireInsurance(userId, isCommand.isYes);
       //残っているマスのリストを取得
       var spaceList: Space[] = loadSpace(userId);
       // リストの要素毎にアクション
@@ -156,7 +156,7 @@ function turnAction(userId: string, isCommand: CommandObj): Object[] {
 
   } else if (flag.isLifeInsurance) {//生命保険
     if (isCommand.isYes || isCommand.isNo) {
-      replyMessages = startTakeLifeInsurance(userId, true);
+      replyMessages = startTakeLifeInsurance(userId, isCommand.isYes);
       //残っているマスのリストを取得
       var spaceList: Space[] = loadSpace(userId);
       // リストの要素毎にアクション
@@ -170,7 +170,7 @@ function turnAction(userId: string, isCommand: CommandObj): Object[] {
   } else if (flag.isStock) {
     if (isCommand.isYes || isCommand.isNo) {
       //株
-      replyMessages = startStock(userId, true);
+      replyMessages = startStock(userId, isCommand.isYes);
       //残っているマスのリストを取得
       var spaceList: Space[] = loadSpace(userId);
       // リストの要素毎にアクション
@@ -473,10 +473,10 @@ function moveAction(userId: string): Object[] {
   return replyMessages;
 }
 
-function spaceListAction(userId: string, placeList:Space[], showSpace:boolean=true) {
+function spaceListAction(userId: string, placeList: Space[], showSpace: boolean = true): Object[] {
   var replyMessages:Object[] = [];
   for (let i = 0; i < placeList.length; i++) {
-    if (i == 1){
+    if (i == 0){
       var obj = SpaceAction(userId, placeList[i], showSpace);
     }else{
       var obj = SpaceAction(userId, placeList[i]);
