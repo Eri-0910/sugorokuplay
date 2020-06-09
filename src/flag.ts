@@ -135,5 +135,7 @@ function setStock(userId: string, isStock: boolean, stockValue?: number) {
   gameSheet.getRange(STOCK_FLAG_RANGE).setValue(Number(isStock));
   if (stockValue!=null) {
     gameSheet.getRange(STOCK_VALUE_RANGE).setValue(stockValue);
+  }else{
+    gameSheet.getRange(STOCK_VALUE_RANGE).setValue(null);
   }
 }
