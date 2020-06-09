@@ -423,11 +423,11 @@ function moveAction(userId: string): Object[] {
   replyMessages = diceMessages;
 
   // マスのリストを取得
-  var pieceList: Space[] = movePiece(userId, dice);
+  var placeList: Space[] = movePiece(userId, dice);
 
   // リストの要素毎にアクション
-  for (let i = 0; i < pieceList.length; i++) {
-    var placeMessages: Object[] = SpaceAction(userId, pieceList[i]);
+  for (let i = 0; i < placeList.length; i++) {
+    var placeMessages: Object[] = SpaceAction(userId, placeList[i]);
     replyMessages = replyMessages.concat(placeMessages);
   }
 

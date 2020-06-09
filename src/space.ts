@@ -417,3 +417,29 @@ function getPlaceMessage(space: Space) {
         }
     }
 }
+
+/**
+ * 未処理のスペースを保存
+ * @param userId ユーザーID
+ * @param spaceList 保存するスペース
+ */
+function saveSpace(userId:string, spaceList:Space[]) {
+    //ユーザーのシートを手に入れる
+    var SpreadSheet = getSpreadSheet(userId);
+    // ゲームデータシートを取得
+    var gameDataSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
+
+    // 現在の状態を知る
+    var restSpace = gameDataSheet.getRange(NEXT_CONTENT_NUM_RANGE).getValue();
+    // 残っているコメントの数を更新
+    gameDataSheet.getRange(NEXT_CONTENT_NUM_RANGE).setValue(restSpace + spaceList.length);
+
+    // 1つずつ保存
+    for (let i = 0; i < spaceList.length; i++) {
+        //書き込み行
+        const writeRow: number = restSpace + i + 1;
+        //書き込む内容の変換
+        var writeData: string = JSON.stringify(spaceList[i]);
+        gameDataSheet.getRange(NEXT_CONTENT_COLUMN + writeRow).setValue(writeData);
+    }
+}
