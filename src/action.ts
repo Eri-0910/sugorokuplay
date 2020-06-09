@@ -88,58 +88,99 @@ function turnAction(userId: string, isCommand: CommandObj): Object[] {
     if(isCommand.value != null){
       //借金を返す
       replyMessages = repayDebt(userId, isCommand.value);
+      //残っているマスのリストを取得
+      var spaceList:Space[] = loadSpace(userId);
+      // リストの要素毎にアクション
+      var replyMessagesAfterAction = spaceListAction(userId, spaceList, false);
+      replyMessages = replyMessages.concat(replyMessagesAfterAction);
     } else {
       //選択されていない
       replyMessages = [stringToMessage('借金を返す場合は金額を、返さない場合は0と入力してください')];
     }
+
   } else if (flag.isBorrowDebt) {
     if (isCommand.isYes || isCommand.isNo) {
       //借金を借りる
       replyMessages = borrowDebt(userId, isCommand.isYes);
+      //残っているマスのリストを取得
+      var spaceList: Space[] = loadSpace(userId);
+      // リストの要素毎にアクション
+      var replyMessagesAfterAction = spaceListAction(userId, spaceList, false);
+      replyMessages = replyMessages.concat(replyMessagesAfterAction);
     } else {
       //選択されていない
       replyMessages = [stringToMessage('借金を借りる場合ははい、借りない場合はいいえと入力してください')];
     }
+
   } else if (flag.isChooseWork) {
     if (isCommand.isYes || isCommand.isNo) {
       //仕事につく
       replyMessages = startChooseWork(userId, true);
+      //残っているマスのリストを取得
+      var spaceList: Space[] = loadSpace(userId);
+      // リストの要素毎にアクション
+      var replyMessagesAfterAction = spaceListAction(userId, spaceList, false);
+      replyMessages = replyMessages.concat(replyMessagesAfterAction);
     } else {
       //選択されていない
       replyMessages = [stringToMessage('仕事に就く場合ははい、就かない場合はいいえと入力してください')];
     }
+
   } else if (flag.isChooseHouse) {
     if (isCommand.id != null) {
       //家を選ぶ
       replyMessages = startChooseHouse(userId, isCommand.id);
+      //残っているマスのリストを取得
+      var spaceList: Space[] = loadSpace(userId);
+      // リストの要素毎にアクション
+      var replyMessagesAfterAction = spaceListAction(userId, spaceList, false);
+      replyMessages = replyMessages.concat(replyMessagesAfterAction);
     } else {
       //選択されていない
       replyMessages = [stringToMessage('家を選ぶ場合は番号を、選ばない場合は0と入力してください')];
     }
+
   } else if (flag.isFireInsurance) {
     if (isCommand.isYes || isCommand.isNo) {
       //火災保険
       replyMessages = startTakeFireInsurance(userId, true);
+      //残っているマスのリストを取得
+      var spaceList: Space[] = loadSpace(userId);
+      // リストの要素毎にアクション
+      var replyMessagesAfterAction = spaceListAction(userId, spaceList, false);
+      replyMessages = replyMessages.concat(replyMessagesAfterAction);
     } else {
       //選択されていない
       replyMessages = [stringToMessage('火災保険に入る場合ははい、入らない場合はいいえと入力してください')];
     }
-  } else if (flag.isLifeInsurance) {
+
+  } else if (flag.isLifeInsurance) {//生命保険
     if (isCommand.isYes || isCommand.isNo) {
       replyMessages = startTakeLifeInsurance(userId, true);
+      //残っているマスのリストを取得
+      var spaceList: Space[] = loadSpace(userId);
+      // リストの要素毎にアクション
+      var replyMessagesAfterAction = spaceListAction(userId, spaceList, false);
+      replyMessages = replyMessages.concat(replyMessagesAfterAction);
     } else {
       //選択されていない
       replyMessages = [stringToMessage('生命保険に入る場合ははい、入らない場合はいいえと入力してください')];
     }
-    //生命保険
+
   } else if (flag.isStock) {
     if (isCommand.isYes || isCommand.isNo) {
       //株
       replyMessages = startStock(userId, true);
+      //残っているマスのリストを取得
+      var spaceList: Space[] = loadSpace(userId);
+      // リストの要素毎にアクション
+      var replyMessagesAfterAction = spaceListAction(userId, spaceList, false);
+      replyMessages = replyMessages.concat(replyMessagesAfterAction);
     } else {
       //選択されていない
       replyMessages = [stringToMessage('株を買う場合ははい、買わない場合はいいえと入力してください')];
     }
+
   } else if (isCommand.isDebt) {//各コマンド
     //借金をしたい
     replyMessages = confirmBorrowDebt(userId);
@@ -426,10 +467,40 @@ function moveAction(userId: string): Object[] {
   var placeList: Space[] = movePiece(userId, dice);
 
   // リストの要素毎にアクション
-  for (let i = 0; i < placeList.length; i++) {
-    var placeMessages: Object[] = SpaceAction(userId, placeList[i]);
-    replyMessages = replyMessages.concat(placeMessages);
-  }
+  var replyMessagesAfterDice = spaceListAction(userId, placeList);
+  replyMessages = replyMessages.concat(replyMessagesAfterDice);
 
+  return replyMessages;
+}
+
+function spaceListAction(userId: string, placeList:Space[], showSpace:boolean=true) {
+  var replyMessages:Object[] = [];
+  for (let i = 0; i < placeList.length; i++) {
+    if (i == 1){
+      var obj = SpaceAction(userId, placeList[i], showSpace);
+    }else{
+      var obj = SpaceAction(userId, placeList[i]);
+    }
+
+    replyMessages = replyMessages.concat(obj.replyMessages);
+    // プレーヤーのアクションを求めている
+    if (obj.needAction) {
+      // 保存するマスのリスト(今見ているの以降)
+      var savePlaceList = placeList.slice(i);
+      // 今フラグ立てるのに引っかかったものを消す
+      if (savePlaceList[0].canChooseWork) {//職業選択
+        savePlaceList[0].canChooseWork = false;
+      } else if (savePlaceList[0].canTakeLifeInsurance) {//生命保険
+        savePlaceList[0].canTakeLifeInsurance = false;
+      } else if (savePlaceList[0].canBuyHouse) {//家
+        savePlaceList[0].canBuyHouse = false
+      } else if (savePlaceList[0].canTakeFireInsurance) {//火災保険
+        savePlaceList[0].canTakeFireInsurance = false
+      } else if (savePlaceList[0].canBuyStock) {//株
+        savePlaceList[0].canBuyStock = false
+      }
+      saveSpace(userId, savePlaceList);
+    }
+  }
   return replyMessages;
 }

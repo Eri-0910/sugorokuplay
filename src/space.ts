@@ -123,9 +123,9 @@ function getSpaceByArray(spaceArray: any[]): Space {
  * 指示に従ってステータスを変更したり、未確認マスの保存をする
  * @param space マス
  */
-function SpaceAction(userId: string, space: Space): Object[] {
+function SpaceAction(userId: string, space: Space, showSpaece: boolean = true): { needAction: Boolean, replyMessages: Object[] } {
     if (space.id >= GOAL_PLACE_NUMBER) {//ゴール
-        return [stringToMessage("ゴールです")];
+        return { needAction: false, replyMessages:[stringToMessage("ゴールです")]};
     }
 
     // 返信するメッセージ
@@ -136,10 +136,13 @@ function SpaceAction(userId: string, space: Space): Object[] {
     // 個人のシートを取得
     var personalDataSheet = SpreadSheet.getSheetByName(PERSONAL_DATA_SHEET_NAME);
 
+    if (showSpaece){
+        // マスの内容
+        var placeMessage: Object = getPlaceMessage(space);
+        replyMessages.push(placeMessage);
+    }
 
-    // マスの内容
-    var placeMessage: Object = getPlaceMessage(space);
-    replyMessages.push(placeMessage);
+    var needAction = false;
 
     // アクション
     if (space.isPayDay) { //給料処理
@@ -168,23 +171,28 @@ function SpaceAction(userId: string, space: Space): Object[] {
         replyMessages.push(stringToMessage(workName + "になることができます。この職業に就きますか？"));
         //フラグセット
         setChooseWork(userId, true, workId);
+        needAction = true;
 
     } else if (space.canTakeLifeInsurance) {//生命保険
         replyMessages.push(stringToMessage("生命保険に入ることができます。入りますか？"));
         setLifeInsurance(userId, true);
+        needAction = true;
 
     } else if (space.canBuyHouse) {//家
         replyMessages.push(stringToMessage("家を買うことができます。どの家を買いますか？買わない場合は0を、買う場合はその家の番号を入力してください。"));
         setChooseHouse(userId, true);
+        needAction = true;
 
     } else if (space.canTakeFireInsurance) {//火災保険
         replyMessages.push(stringToMessage("火災保険に入れます。入りますか？"));
         setFireInsurance(userId, true);
+        needAction = true;
 
     } else if (space.canBuyStock) {//株
         replyMessages.push(stringToMessage("株を買うことができます。買いますか？"));
         var stockValue = space.stockValue;
         setStock(userId, true, stockValue);
+        needAction = true;
 
     } else if (space.isMarriage) {//結婚
         //変化させる
@@ -253,7 +261,7 @@ function SpaceAction(userId: string, space: Space): Object[] {
         //動けない様に
         setMovable(userId, false);
     }
-    return replyMessages;
+    return { needAction: needAction, replyMessages:replyMessages};
 }
 
 interface Space {
@@ -443,4 +451,33 @@ function saveSpace(userId:string, spaceList:Space[]) {
         var writeData: string = JSON.stringify(spaceList[i]);
         gameDataSheet.getRange(NEXT_CONTENT_COLUMN + writeRow).setValue(writeData);
     }
+}
+
+
+/**
+ * 保存済みのスペースを取得
+ * @param userId ユーザーID
+ */
+function loadSpace(userId: string) {
+    //ユーザーのシートを手に入れる
+    var SpreadSheet = getSpreadSheet(userId);
+    // ゲームデータシートを取得
+    var gameDataSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
+
+    // 現在の状態を知る
+    var restSpaceNum = gameDataSheet.getRange(NEXT_CONTENT_NUM_RANGE).getValue();
+    // 全部取ってくる
+    var restSpaceData = gameDataSheet.getRange(1, 8, restSpaceNum,1).getValues();
+    // 残っているコメントの数を更新
+    gameDataSheet.getRange(NEXT_CONTENT_NUM_RANGE).setValue(0);
+
+    var restSpace: Space[] = [];
+
+    // 1つずつ保存
+    for (let i = 0; i < restSpaceNum; i++) {
+        restSpace.push(JSON.parse(restSpaceData[i][0]));
+    }
+    gameDataSheet.getRange(1, 8, restSpaceNum, 1).deleteCells(SpreadsheetApp.Dimension.ROWS);
+
+    return restSpace
 }
