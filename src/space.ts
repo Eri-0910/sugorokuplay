@@ -13,15 +13,22 @@ function movePiece(userId: string, num: number): Space[] {
     // 現在位置を取得
     var startPlace: number = personalDataSheet.getRange(NOW_PLACE_RANGE).getValue();
 
-    // 1マスずつみる
-    var oneSpaceId: number = startPlace + num;
-    // やるべきマスのリストを取得
-    // 駒の位置を更新
-    personalDataSheet.getRange(NOW_PLACE_RANGE).setValue(startPlace + num);
-    // 返す
-    var spaceList: Space[] = [getSpace(userId, oneSpaceId)]
+    var spaceList = getSpaceRange(userId, startPlace+1, num);
 
-    return spaceList
+    var returnSpaceList: Space[] = [];
+
+    // 1マスずつみる
+    for (let i = 1; i <= num; i++) {
+        var space: Space = spaceList[i-1];
+        if (i == num || space.isMustStop){//最後のマスorストップマスならそこで終わる
+            personalDataSheet.getRange(NOW_PLACE_RANGE).setValue(startPlace + i);
+            returnSpaceList.push(space);
+            break;
+        } else if (space.isThroughAction) {//通過指示マスなら追加して先を見る
+            returnSpaceList.push(space);
+        }
+    }
+    return returnSpaceList
 }
 
 /**
@@ -44,49 +51,70 @@ function movePieceTo(userId: string, spaceId: number): Space {
     return space;
 }
 
-
-
 /**
- * マスの内容を手に入れられる
+ * 開始点から指定された数ののマスのデータを取得しリストを返す
  * @param userId ユーザーID
- * @param spaceId マスのID
+ * @param spaceId 開始点となるマスのID
+ * @param num 取得したいマスの数
  */
-function getSpace(userId: string, spaceId: number): Space {
+function getSpaceRange(userId: string, spaceId: number, num: number): Space[] {
+    var spaceList: Space[] = [];
     //ユーザーのシートを手に入れる
     var SpreadSheet = getSpreadSheet(userId);
     // ボードシートを取得
     var boardDataSheet = SpreadSheet.getSheetByName(BOARD_DATA_SHEET_NAME);
-    var spaceRow: number = spaceId + 1;
+    var startSpaceRow = spaceId + 1;
     // 配列にして一気に読み出す
-    var readData:any = boardDataSheet.getRange(spaceRow, BOARD_DATA_START_COLUMN, 1, BOARD_DATA_COLUMN_NUM).getValues();
+    var readData: any = boardDataSheet.getRange(startSpaceRow, BOARD_DATA_START_COLUMN, num, BOARD_DATA_COLUMN_NUM).getValues();
+    for (let i = 0; i < num; i++) {
+        spaceList.push(getSpaceByArray(readData[i]));
+    }
+    return spaceList
+}
+
+/**
+ * 1マスの内容を手に入れられる
+ * @param userId ユーザーID
+ * @param spaceId マスのID
+ */
+function getSpace(userId: string, spaceId: number): Space {
+    var spaceList: Space[] = getSpaceRange(userId, spaceId, 1);
+    return spaceList[0];
+}
+
+/**
+ * 配列からマスの内容を手に入れられる
+ * @param spaceId マスのID
+ */
+function getSpaceByArray(spaceArray: any[]): Space {
     // TODO #2　配列内の数字をCONSTにする
     var space: Space = {
-        id: readData[0][0],
-        content: readData[0][1],
-        isGo: readData[0][2],
-        goNum: readData[0][3],
-        isBack: readData[0][4],
-        backNum: readData[0][5],
-        isStop: readData[0][6],
-        stopTurn: readData[0][7],
-        isGet: readData[0][8],
-        getNum: readData[0][9],
-        isPay: readData[0][10],
-        payNum: readData[0][11],
-        isThroughAction: readData[0][12],
-        isMustStop: readData[0][13],
-        isPayDay: readData[0][14],
-        isMarriage: readData[0][15],
-        isBirthChild: readData[0][16],
-        childNum: readData[0][17],
-        canBuyHouse: readData[0][18],
-        isLostHOuse: readData[0][19],
-        canTakeLifeInsurance: readData[0][20],
-        canTakeFireInsurance: readData[0][21],
-        canBuyStock: readData[0][22],
-        stockValue: readData[0][23],
-        canChooseWork: readData[0][24],
-        choosableWorkId: readData[0][25],
+        id: spaceArray[0],
+        content: spaceArray[1],
+        isGo: spaceArray[2],
+        goNum: spaceArray[3],
+        isBack: spaceArray[4],
+        backNum: spaceArray[5],
+        isStop: spaceArray[6],
+        stopTurn: spaceArray[7],
+        isGet: spaceArray[8],
+        getNum: spaceArray[9],
+        isPay: spaceArray[10],
+        payNum: spaceArray[11],
+        isThroughAction: spaceArray[12],
+        isMustStop: spaceArray[13],
+        isPayDay: spaceArray[14],
+        isMarriage: spaceArray[15],
+        isBirthChild: spaceArray[16],
+        childNum: spaceArray[17],
+        canBuyHouse: spaceArray[18],
+        isLostHOuse: spaceArray[19],
+        canTakeLifeInsurance: spaceArray[20],
+        canTakeFireInsurance: spaceArray[21],
+        canBuyStock: spaceArray[22],
+        stockValue: spaceArray[23],
+        canChooseWork: spaceArray[24],
+        choosableWorkId: spaceArray[25],
     }
     return space;
 }
@@ -95,9 +123,9 @@ function getSpace(userId: string, spaceId: number): Space {
  * 指示に従ってステータスを変更したり、未確認マスの保存をする
  * @param space マス
  */
-function SpaceAction(userId: string, space: Space): Object[] {
+function SpaceAction(userId: string, space: Space, showSpaece: boolean = true): { needAction: Boolean, replyMessages: Object[] } {
     if (space.id >= GOAL_PLACE_NUMBER) {//ゴール
-        return [stringToMessage("ゴールです")];
+        return { needAction: false, replyMessages:[stringToMessage("ゴールです")]};
     }
 
     // 返信するメッセージ
@@ -108,10 +136,13 @@ function SpaceAction(userId: string, space: Space): Object[] {
     // 個人のシートを取得
     var personalDataSheet = SpreadSheet.getSheetByName(PERSONAL_DATA_SHEET_NAME);
 
+    if (showSpaece){
+        // マスの内容
+        var placeMessage: Object = getPlaceMessage(space);
+        replyMessages.push(placeMessage);
+    }
 
-    // マスの内容
-    var placeMessage: Object = getPlaceMessage(space);
-    replyMessages.push(placeMessage);
+    var needAction = false;
 
     // アクション
     if (space.isPayDay) { //給料処理
@@ -140,22 +171,28 @@ function SpaceAction(userId: string, space: Space): Object[] {
         replyMessages.push(stringToMessage(workName + "になることができます。この職業に就きますか？"));
         //フラグセット
         setChooseWork(userId, true, workId);
+        needAction = true;
 
     } else if (space.canTakeLifeInsurance) {//生命保険
         replyMessages.push(stringToMessage("生命保険に入ることができます。入りますか？"));
         setLifeInsurance(userId, true);
+        needAction = true;
 
     } else if (space.canBuyHouse) {//家
         replyMessages.push(stringToMessage("家を買うことができます。どの家を買いますか？買わない場合は0を、買う場合はその家の番号を入力してください。"));
         setChooseHouse(userId, true);
+        needAction = true;
 
     } else if (space.canTakeFireInsurance) {//火災保険
         replyMessages.push(stringToMessage("火災保険に入れます。入りますか？"));
         setFireInsurance(userId, true);
+        needAction = true;
 
     } else if (space.canBuyStock) {//株
         replyMessages.push(stringToMessage("株を買うことができます。買いますか？"));
-        setStock(userId, true);
+        var stockValue = space.stockValue;
+        setStock(userId, true, stockValue);
+        needAction = true;
 
     } else if (space.isMarriage) {//結婚
         //変化させる
@@ -224,7 +261,7 @@ function SpaceAction(userId: string, space: Space): Object[] {
         //動けない様に
         setMovable(userId, false);
     }
-    return replyMessages;
+    return { needAction: needAction, replyMessages:replyMessages};
 }
 
 interface Space {
@@ -251,7 +288,7 @@ interface Space {
     canTakeLifeInsurance: boolean;
     canTakeFireInsurance: boolean;
     canBuyStock: boolean;
-    stockValue: boolean;
+    stockValue: number;
     canChooseWork: boolean;
     choosableWorkId: number;
 }
@@ -388,4 +425,59 @@ function getPlaceMessage(space: Space) {
             }
         }
     }
+}
+
+/**
+ * 未処理のスペースを保存
+ * @param userId ユーザーID
+ * @param spaceList 保存するスペース
+ */
+function saveSpace(userId:string, spaceList:Space[]) {
+    //ユーザーのシートを手に入れる
+    var SpreadSheet = getSpreadSheet(userId);
+    // ゲームデータシートを取得
+    var gameDataSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
+
+    // 現在の状態を知る
+    var restSpace = gameDataSheet.getRange(NEXT_CONTENT_NUM_RANGE).getValue();
+    // 残っているコメントの数を更新
+    gameDataSheet.getRange(NEXT_CONTENT_NUM_RANGE).setValue(restSpace + spaceList.length);
+
+    // 1つずつ保存
+    for (let i = 0; i < spaceList.length; i++) {
+        //書き込み行
+        const writeRow: number = restSpace + i + 1;
+        //書き込む内容の変換
+        var writeData: string = JSON.stringify(spaceList[i]);
+        gameDataSheet.getRange(NEXT_CONTENT_COLUMN + writeRow).setValue(writeData);
+    }
+}
+
+
+/**
+ * 保存済みのスペースを取得
+ * @param userId ユーザーID
+ */
+function loadSpace(userId: string) {
+    //ユーザーのシートを手に入れる
+    var SpreadSheet = getSpreadSheet(userId);
+    // ゲームデータシートを取得
+    var gameDataSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
+
+    // 現在の状態を知る
+    var restSpaceNum = gameDataSheet.getRange(NEXT_CONTENT_NUM_RANGE).getValue();
+    // 全部取ってくる
+    var restSpaceData = gameDataSheet.getRange(1, 8, restSpaceNum,1).getValues();
+    // 残っているコメントの数を更新
+    gameDataSheet.getRange(NEXT_CONTENT_NUM_RANGE).setValue(0);
+
+    var restSpace: Space[] = [];
+
+    // 1つずつ保存
+    for (let i = 0; i < restSpaceNum; i++) {
+        restSpace.push(JSON.parse(restSpaceData[i][0]));
+    }
+    gameDataSheet.getRange(1, 8, restSpaceNum, 1).deleteCells(SpreadsheetApp.Dimension.ROWS);
+
+    return restSpace
 }

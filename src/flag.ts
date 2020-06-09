@@ -126,11 +126,16 @@ function setFireInsurance(userId: string, isFireInsurance: boolean) {
  * @param userId ユーザーID
  * @param isStock 株購入に入ったらtrue
  */
-function setStock(userId: string, isStock: boolean) {
+function setStock(userId: string, isStock: boolean, stockValue?: number) {
   //ユーザーのシートを手に入れる
   var SpreadSheet = getSpreadSheet(userId);
   // これでフラグの載っているのシートを取得
   var gameSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
   //フラグをセット
   gameSheet.getRange(STOCK_FLAG_RANGE).setValue(Number(isStock));
+  if (stockValue!=null) {
+    gameSheet.getRange(STOCK_VALUE_RANGE).setValue(stockValue);
+  }else{
+    gameSheet.getRange(STOCK_VALUE_RANGE).setValue(null);
+  }
 }
