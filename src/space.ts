@@ -243,18 +243,18 @@ function SpaceAction(userId: string, space: Space, showSpaece: boolean = true): 
         //移動させて移動先のマスを取得
         var newSpace: Space = movePieceTo(userId, space.id + space.goNum);
         //移動アクションを実行
-        var afterMoveMeassage = SpaceAction(userId, newSpace);
+        var afterMoveObject = SpaceAction(userId, newSpace);
         //移動した結果のメッセージを送る
-        replyMessages = replyMessages.concat(afterMoveMeassage);
+        replyMessages = replyMessages.concat(afterMoveObject.replyMessages);
 
     } else if (space.backNum) {//戻る
         replyMessages.push(stringToMessage(space.backNum + "マス戻ります"));
         //移動させて移動先のマスを取得
         var newSpace: Space = movePieceTo(userId, space.id - space.backNum);
         //移動アクションを実行
-        var afterMoveMeassage = SpaceAction(userId, newSpace);
+        var afterMoveObject = SpaceAction(userId, newSpace);
         //移動した結果のメッセージを送る
-        replyMessages = replyMessages.concat(afterMoveMeassage);
+        replyMessages = replyMessages.concat(afterMoveObject.replyMessages);
 
     } else if (space.isStop) {//休み
         replyMessages.push(stringToMessage(space.stopTurn + "ターン休みです"));
