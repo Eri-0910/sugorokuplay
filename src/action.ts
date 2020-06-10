@@ -88,11 +88,6 @@ function turnAction(userId: string, isCommand: CommandObj): Object[] {
     if(isCommand.value != null){
       //借金を返す
       replyMessages = repayDebt(userId, isCommand.value);
-      //残っているマスのリストを取得
-      var spaceList:Space[] = loadSpace(userId);
-      // リストの要素毎にアクション
-      var replyMessagesAfterAction = spaceListAction(userId, spaceList, false);
-      replyMessages = replyMessages.concat(replyMessagesAfterAction);
     } else {
       //選択されていない
       replyMessages = [stringToMessage('借金を返す場合は金額を、返さない場合は0と入力してください')];
@@ -102,11 +97,6 @@ function turnAction(userId: string, isCommand: CommandObj): Object[] {
     if (isCommand.isYes || isCommand.isNo) {
       //借金を借りる
       replyMessages = borrowDebt(userId, isCommand.isYes);
-      //残っているマスのリストを取得
-      var spaceList: Space[] = loadSpace(userId);
-      // リストの要素毎にアクション
-      var replyMessagesAfterAction = spaceListAction(userId, spaceList, false);
-      replyMessages = replyMessages.concat(replyMessagesAfterAction);
     } else {
       //選択されていない
       replyMessages = [stringToMessage('借金を借りる場合ははい、借りない場合はいいえと入力してください')];
