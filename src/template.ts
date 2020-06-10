@@ -1,37 +1,4 @@
-function getActionTemplate(isWithReset = false){
-    var actions;
-    if (isWithReset){
-        actions = [
-            {
-                "type": "message",
-                "label": "ダイス",
-                "text": "ダイス"
-            },
-            {
-                "type": "message",
-                "label": "ステータス確認",
-                "text": "ステータス確認"
-            },
-            {
-                "type": "message",
-                "label": "リセット",
-                "text": "リセット"
-            }
-        ]
-    }else{
-        actions = [
-            {
-                "type": "message",
-                "label": "ダイス",
-                "text": "ダイス"
-            },
-            {
-                "type": "message",
-                "label": "ステータス確認",
-                "text": "ステータス"
-            }
-        ]
-    }
+function getActionTemplate() {
     var actionTemplate = {
         "type": "template",
         "altText": "次の行動を選んでください",
@@ -39,20 +6,40 @@ function getActionTemplate(isWithReset = false){
             "type": "buttons",
             "title": "行動メニュー",
             "text": "次の行動を選んでください",
-            "actions": actions
+            "actions": [
+                {
+                    "type": "message",
+                    "label": "ダイス",
+                    "text": "ダイス"
+                },
+                {
+                    "type": "message",
+                    "label": "ステータス確認",
+                    "text": "ステータス"
+                },
+                {
+                    "type": "message",
+                    "label": "借金する",
+                    "text": "借金する"
+                },
+                {
+                    "type": "message",
+                    "label": "借金を返す",
+                    "text": "借金を返す"
+                }
+            ]
         }
     }
     return actionTemplate
 }
 
-function getNewGameTemplate(){
+function getNewGameTemplate() {
     var newGameTemplate = {
         "type": "template",
-        "altText": "「ダイス」と送ってください",
+        "altText": "「スタート」と送ってください",
         "template": {
             "type": "buttons",
-            "title": "ゲーム開始",
-            "text": "以下より選択してください。",
+            "text": "ゲーム開始",
             "actions": [
                 {
                     "type": "message",
@@ -78,6 +65,49 @@ function getNextTemplate() {
                     "type": "message",
                     "label": "次へ",
                     "text": "次へ"
+                }
+            ]
+        }
+    }
+    return nextTemplate
+}
+
+function getYesNoTemplate(str: string) {
+    var nextTemplate = {
+        "type": "template",
+        "altText": "「はい」または「いいえ」を送ってください",
+        "template": {
+            "type": "confirm",
+            "text": str,
+            "actions": [
+                {
+                    "type": "message",
+                    "label": "はい",
+                    "text": "はい"
+                },
+                {
+                    "type": "message",
+                    "label": "いいえ",
+                    "text": "いいえ"
+                }
+            ]
+        }
+    }
+    return nextTemplate
+}
+
+function getNextUserTemplate() {
+    var nextTemplate = {
+        "type": "template",
+        "altText": "「次のユーザーへ」と送ってください",
+        "template": {
+            "type": "buttons",
+            "text": "confirm",
+            "actions": [
+                {
+                    "type": "message",
+                    "label": "次のユーザーへ",
+                    "text": "次のユーザーへ"
                 }
             ]
         }
