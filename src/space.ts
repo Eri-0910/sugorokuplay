@@ -228,7 +228,7 @@ function SpaceAction(userId: string, space: Space, showSpaece: boolean = true): 
             var debtAddedMoney: number = newMoney + debt;
             //変化させる
             var writeData = [[debtAddedMoney], [newDebt]];
-            personalDataSheet.getRange(2, 2, 3, 2).setValues(writeData);
+            personalDataSheet.getRange(2, 2, 2, 1).setValues(writeData);
             // メッセージ
             replyMessages.push(stringToMessage("お金を" + space.payNum + "円支払いました"));
             replyMessages.push(stringToMessage("金額が不足したため、" + debt + "円借金しました(現在借金" + newDebt + "円、所持金" + debtAddedMoney + "円)"));
