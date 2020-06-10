@@ -168,13 +168,13 @@ function SpaceAction(userId: string, space: Space, showSpaece: boolean = true): 
         // 職業の名前
         var workName = workDataSheet.getRange(WORK_NAME_COLUMN + (workId + 1)).getValue();
         // メッセージ
-        replyMessages.push(stringToMessage(workName + "になることができます。この職業に就きますか？"));
+        replyMessages.push(getYesNoTemplate(workName + "になることができます。この職業に就きますか？"));
         //フラグセット
         setChooseWork(userId, true, workId);
         needAction = true;
 
     } else if (space.canTakeLifeInsurance) {//生命保険
-        replyMessages.push(stringToMessage("生命保険に入ることができます。入りますか？"));
+        replyMessages.push(getYesNoTemplate('生命保険に入ることができます。入りますか？'));
         setLifeInsurance(userId, true);
         needAction = true;
 
@@ -184,12 +184,12 @@ function SpaceAction(userId: string, space: Space, showSpaece: boolean = true): 
         needAction = true;
 
     } else if (space.canTakeFireInsurance) {//火災保険
-        replyMessages.push(stringToMessage("火災保険に入れます。入りますか？"));
+        replyMessages.push(getYesNoTemplate('火災保険に入れます。入りますか？'));
         setFireInsurance(userId, true);
         needAction = true;
 
     } else if (space.canBuyStock) {//株
-        replyMessages.push(stringToMessage("株を買うことができます。買いますか？"));
+        replyMessages.push(getYesNoTemplate('株を買うことができます。買いますか？'));
         var stockValue = space.stockValue;
         setStock(userId, true, stockValue);
         needAction = true;

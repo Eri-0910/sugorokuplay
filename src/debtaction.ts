@@ -5,7 +5,7 @@
  */
 function confirmBorrowDebt(userId: string): Object[] {
   var replyMessages: Object[];
-  replyMessages = [stringToMessage("借金しますか？")];
+  replyMessages = [getYesNoTemplate('借金をしますか？')];
   // フラグ
   setBorrowDebt(userId, true);
   return replyMessages;
