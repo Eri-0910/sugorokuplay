@@ -62,13 +62,13 @@ function beforeGameAction(userId: string, isCommand: CommandObj): Object[] {
     //ゲーム開始
     gameStart(userId);
     //開始できたらメッセージ
-    replyMessages = [stringToMessage('ゲームを開始しました。')];
+    replyMessages = [stringToMessage('ゲームを開始しました。'), getActionTemplate()];
   } else if (isCommand.isHelp) {
     //ゲーム未開始時点のヘルプ
-    replyMessages = [stringToMessage('「スタート」と送ると、ゲームを開始します。それ以外のコマンドは、ゲーム開始後にヘルプをご覧ください。')];
+    replyMessages = [stringToMessage('「スタート」と送ると、ゲームを開始します。それ以外のコマンドは、ゲーム開始後にヘルプをご覧ください。'), getNewGameTemplate()];
   } else {
     //想定外の言葉が入力されたときの処理
-    replyMessages = [stringToMessage('ゲームが開始されていません。「スタート」と送ってください')];
+    replyMessages = [stringToMessage('ゲームが開始されていません。「スタート」と送ってください'), getNewGameTemplate()];
   }
   return replyMessages;
 }
