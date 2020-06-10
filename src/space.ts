@@ -466,6 +466,10 @@ function loadSpace(userId: string) {
 
     // 現在の状態を知る
     var restSpaceNum = gameDataSheet.getRange(NEXT_CONTENT_NUM_RANGE).getValue();
+    if (restSpaceNum==0) {//読むものがないのでここで終わり
+        makePrintLog("返すものがありませんでした in loadSpace");
+        return [];
+    }
     // 全部取ってくる
     var restSpaceData = gameDataSheet.getRange(1, 8, restSpaceNum,1).getValues();
     // 残っているコメントの数を更新
