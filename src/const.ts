@@ -28,6 +28,7 @@ const CHIRD_NUM_RANGE = "B10";
 const IN_FIRE_INSURANCE_RANGE = "B11";
 const IN_LIFE_INSURANCE_RANGE = "B12";
 const IS_MOVABLE_RANGE = 'B13';
+const IS_GOALED_RANGE = 'B14';
 
 // ゲームデータ
 const NEXT_TEXT_NUM_RANGE = 'B1';

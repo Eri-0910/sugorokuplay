@@ -123,8 +123,9 @@ function getSpaceByArray(spaceArray: any[]): Space {
  * 指示に従ってステータスを変更したり、未確認マスの保存をする
  * @param space マス
  */
-function SpaceAction(userId: string, space: Space, showSpaece: boolean = true): { needAction: Boolean, replyMessages: Object[] } {
+function SpaceAction(userId: string, space: Space, showSpaece: boolean = true): { needAction: boolean, replyMessages: Object[] } {
     if (space.id >= GOAL_PLACE_NUMBER) {//ゴール
+        setGoaled(userId);
         return { needAction: false, replyMessages:[stringToMessage("ゴールです")]};
     }
 

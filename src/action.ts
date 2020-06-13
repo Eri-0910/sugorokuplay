@@ -465,6 +465,7 @@ function moveAction(userId: string): Object[] {
 
 function spaceListAction(userId: string, placeList: Space[], showSpace: boolean = true): Object[] {
   var replyMessages:Object[] = [];
+  var needAction = false;
   for (let i = 0; i < placeList.length; i++) {
     if (i == 0){
       var obj = SpaceAction(userId, placeList[i], showSpace);
@@ -475,6 +476,7 @@ function spaceListAction(userId: string, placeList: Space[], showSpace: boolean 
     replyMessages = replyMessages.concat(obj.replyMessages);
     // プレーヤーのアクションを求めている
     if (obj.needAction) {
+      needAction = obj.needAction;
       // 保存するマスのリスト(今見ているの以降)
       var savePlaceList = placeList.slice(i);
       // 今フラグ立てるのに引っかかったものを消す
@@ -491,6 +493,9 @@ function spaceListAction(userId: string, placeList: Space[], showSpace: boolean 
       }
       saveSpace(userId, savePlaceList);
     }
+  }
+  if (!needAction && !isGoaled(userId)){
+    replyMessages.push(getActionTemplate());
   }
   return replyMessages;
 }
