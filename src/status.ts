@@ -281,3 +281,27 @@ function statusAction(userId: string):Object[]{
     return [statusMessage];
 }
 
+/**
+ * ゴールしているかどうか
+ * @param userId ユーザーID
+ */
+function isGoaled(userId:string) {
+    //ユーザーのシートを手に入れる
+    var SpreadSheet = getSpreadSheet(userId);
+    // ユーザーのシートを取得
+    var personSheet = SpreadSheet.getSheetByName(PERSONAL_DATA_SHEET_NAME);
+    var readData:boolean = personSheet.getRange(IS_GOALED_RANGE).getValue();
+    return readData;
+}
+
+/**
+ * ゴール済みとマークする
+ * @param userId ユーザーID
+ */
+function setGoaled(userId: string) {
+    //ユーザーのシートを手に入れる
+    var SpreadSheet = getSpreadSheet(userId);
+    // ユーザーのシートを取得
+    var personSheet = SpreadSheet.getSheetByName(PERSONAL_DATA_SHEET_NAME);
+    personSheet.getRange(IS_GOALED_RANGE).setValue(1);
+}

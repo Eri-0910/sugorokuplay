@@ -99,7 +99,7 @@ function turnAction(userId: string, isCommand: CommandObj): Object[] {
       replyMessages = borrowDebt(userId, isCommand.isYes);
     } else {
       //選択されていない
-      replyMessages = [stringToMessage('借金を借りる場合ははい、借りない場合はいいえと入力してください')];
+      replyMessages = [stringToMessage('借金を借りる場合ははい、借りない場合はいいえと入力してください'), getYesNoTemplate('借金をかりますか？')];
     }
 
   } else if (flag.isChooseWork) {
@@ -113,7 +113,7 @@ function turnAction(userId: string, isCommand: CommandObj): Object[] {
       replyMessages = replyMessages.concat(replyMessagesAfterAction);
     } else {
       //選択されていない
-      replyMessages = [stringToMessage('仕事に就く場合ははい、就かない場合はいいえと入力してください')];
+      replyMessages = [stringToMessage('仕事に就く場合ははい、就かない場合はいいえと入力してください'), getYesNoTemplate('仕事につきますか？')];
     }
 
   } else if (flag.isChooseHouse) {
@@ -141,7 +141,7 @@ function turnAction(userId: string, isCommand: CommandObj): Object[] {
       replyMessages = replyMessages.concat(replyMessagesAfterAction);
     } else {
       //選択されていない
-      replyMessages = [stringToMessage('火災保険に入る場合ははい、入らない場合はいいえと入力してください')];
+      replyMessages = [stringToMessage('火災保険に入る場合ははい、入らない場合はいいえと入力してください'), getYesNoTemplate('火災保険に入りますか？')];
     }
 
   } else if (flag.isLifeInsurance) {//生命保険
@@ -154,7 +154,7 @@ function turnAction(userId: string, isCommand: CommandObj): Object[] {
       replyMessages = replyMessages.concat(replyMessagesAfterAction);
     } else {
       //選択されていない
-      replyMessages = [stringToMessage('生命保険に入る場合ははい、入らない場合はいいえと入力してください')];
+      replyMessages = [stringToMessage('生命保険に入る場合ははい、入らない場合はいいえと入力してください'), getYesNoTemplate('生命保険に入りますか？')];
     }
 
   } else if (flag.isStock) {
@@ -168,7 +168,7 @@ function turnAction(userId: string, isCommand: CommandObj): Object[] {
       replyMessages = replyMessages.concat(replyMessagesAfterAction);
     } else {
       //選択されていない
-      replyMessages = [stringToMessage('株を買う場合ははい、買わない場合はいいえと入力してください')];
+      replyMessages = [stringToMessage('株を買う場合ははい、買わない場合はいいえと入力してください'), getYesNoTemplate('株を買いますか？')];
     }
 
   } else if (isCommand.isDebt) {//各コマンド
@@ -465,6 +465,7 @@ function moveAction(userId: string): Object[] {
 
 function spaceListAction(userId: string, placeList: Space[], showSpace: boolean = true): Object[] {
   var replyMessages:Object[] = [];
+  var needAction = false;
   for (let i = 0; i < placeList.length; i++) {
     if (i == 0){
       var obj = SpaceAction(userId, placeList[i], showSpace);
@@ -475,6 +476,7 @@ function spaceListAction(userId: string, placeList: Space[], showSpace: boolean 
     replyMessages = replyMessages.concat(obj.replyMessages);
     // プレーヤーのアクションを求めている
     if (obj.needAction) {
+      needAction = obj.needAction;
       // 保存するマスのリスト(今見ているの以降)
       var savePlaceList = placeList.slice(i);
       // 今フラグ立てるのに引っかかったものを消す
@@ -491,6 +493,9 @@ function spaceListAction(userId: string, placeList: Space[], showSpace: boolean 
       }
       saveSpace(userId, savePlaceList);
     }
+  }
+  if (!needAction && !isGoaled(userId)){
+    replyMessages.push(getActionTemplate());
   }
   return replyMessages;
 }
