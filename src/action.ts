@@ -82,6 +82,19 @@ function beforeGameAction(userId: string, isCommand: CommandObj): Object[] {
 function turnAction(userId: string, isCommand: CommandObj): Object[] {
   //返信メッセージを決める
   var replyMessages: Object[];
+  // ゴール後にできるのはステータス確認だけ
+  if(isGoaled(userId)){
+    if (isCommand.isStatus) {
+      //ステータスを取得
+      replyMessages = statusAction(userId);
+    }else{
+      replyMessages = [stringToMessage('ゴール済みです')]
+    }
+
+    return replyMessages;
+  }
+
+  // 以下ゴール前のアクション
   //フラグの確認
   var flag: Flag = getFlag(userId);
   if (flag.isRepayDebt) {//フラグアクション
