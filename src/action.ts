@@ -508,7 +508,8 @@ function spaceListAction(userId: string, placeList: Space[], showSpace: boolean 
     }
   }
   if (!needAction && !isGoaled(userId)){
-    replyMessages.push(getActionTemplate());
+    setFinishTurn(userId, true);
+    replyMessages.push(getNextUserTemplate());
   }
   return replyMessages;
 }
