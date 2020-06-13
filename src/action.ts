@@ -204,14 +204,8 @@ function turnAction(userId: string, isCommand: CommandObj): Object[] {
     //ステータスを取得
     replyMessages = statusAction(userId);
   } else if (isCommand.isDice) {
-    if (canMove(userId)) {
-    　//動けるので動く
-      replyMessages = moveAction(userId);
-    } else {
-      replyMessages = [stringToMessage('このターンは休みです')];
-      //動ける様に
-      setMovable(userId, true);
-    }
+    // アクション
+    replyMessages = moveAction(userId);
   } else {
     //無効
     replyMessages = [stringToMessage('このコマンドは無効です。')];
@@ -467,6 +461,17 @@ function startChooseWork(userId: string, doAction: boolean): Object[] {
 function moveAction(userId: string): Object[] {
   //返り値
   var replyMessages: Object[];
+
+  // 移動できるかどうかの確認
+  if (!canMove(userId)) {
+    //動ける様に
+    setMovable(userId, true);
+    // ターンは終わり
+    setFinishTurn(userId, true);
+    replyMessages = [stringToMessage('このターンは休みです'), getNextUserTemplate()];
+    return replyMessages;
+  }
+
   //サイコロをふる
   var dice: number = Math.floor(Math.random() * 6) + 1;
 
