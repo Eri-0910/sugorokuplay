@@ -1,3 +1,4 @@
 .DS_Store
-/src/key.ts
+/src/one/key.ts
+/**/key.ts
 node_modules
