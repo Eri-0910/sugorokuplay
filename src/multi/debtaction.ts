@@ -1,25 +1,25 @@
 /**
  * 借金をする確認を出す
- * @param {string} userId ユーザーID
+ * @param {string} groupId グループID
  * @returns {Object[]} 出力したいッセージ
  */
-function confirmBorrowDebt(userId: string): Object[] {
+function confirmBorrowDebt(groupId: string): Object[] {
   var replyMessages: Object[];
   replyMessages = [getYesNoTemplate('借金をしますか？')];
   // フラグ
-  setBorrowDebt(userId, true);
+  setBorrowDebt(groupId, true);
   return replyMessages;
 }
 
 /**
  * 借金を返す確認を出す
- * @param {string} userId ユーザーID
+ * @param {string} groupId グループID
  * @returns {string[]} 出力したいッセージ
  */
-function confirmRepayDebt(userId: string): Object[] {
+function confirmRepayDebt(groupId: string): Object[] {
   var replyMessages: Object[];
   replyMessages = [stringToMessage("返金金額を入力してください")];
   // フラグ
-  setRepayDebt(userId, true);
+  setRepayDebt(groupId, true);
   return replyMessages;
 }

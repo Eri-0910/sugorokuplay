@@ -26,6 +26,8 @@ function doPost(e) {
 
     //送ってきたユーザーのIDを取得
     var userId = json.events[0].source.userId;
+    //グループのID
+    var groupId = json.events[0].source.groupId;
 
     //送られたLINEメッセージを取得
     var userMessage = json.events[0].message.text;
@@ -37,8 +39,9 @@ function doPost(e) {
     var isCommand: CommandObj = commandParser(splitMessage[0]);
 
     //アクションを実行しメッセージを取得
-    var replyMessages: Object[] = gameAction(userId, isCommand);
+    var replyMessages: Object[] = gameAction(groupId, userId, isCommand);
 
+    makePrintLog(replyMessages.length);
     //長さの設定
     if (replyMessages.length > 5) {
         setNextMessage(userId, replyMessages.slice(4, replyMessages.length));
@@ -60,18 +63,19 @@ function doPost(e) {
  * コマンドをパースした後のオブジェクト
  */
 interface CommandObj {
-    isStart: boolean;
-    isHelp: boolean;
-    isReset: boolean;
-    isNext: boolean;
-    isDice: boolean;
-    isStatus: boolean;
-    isDebt: boolean;
-    isRepay: boolean;
-    isYes: boolean;
-    isNo: boolean;
-    value: number|null;
-    id: number|null
+  isNextUser: boolean,
+  isStart: boolean;
+  isHelp: boolean;
+  isReset: boolean;
+  isNext: boolean;
+  isDice: boolean;
+  isStatus: boolean;
+  isDebt: boolean;
+  isRepay: boolean;
+  isYes: boolean;
+  isNo: boolean;
+  value: number|null;
+  id: number|null
 }
 
 /**
@@ -80,25 +84,27 @@ interface CommandObj {
  * @returns {CommandObj} コマンドかどうかをその内容ごとにboolにしたもの
  */
 function commandParser(str: string): CommandObj{
-    //ダイスを振るコマンドかどうか
-    var isDiceCommand = DICE_COMMNAD_LIST.includes(str);
-    //リセットするかどうか
-    var isResetCommand = RESET_COMMNAD_LIST.includes(str);
-    //ステータス確認するかどうか
-    var isStatusCommand = STATUS_COMMNAD_LIST.includes(str);
-    //ゲームを新たに開始するかどうか
-    var isStartCommand = START_COMMNAD_LIST.includes(str);
-    //文章を送るコマンドかどうか
-    var isNextCommand = NEXT_COMMNAD_LIST.includes(str);
-    //ヘルプコマンドかどうか
-    var isHelpCommand = HELP_COMMNAD_LIST.includes(str);
-    //借金コマンドかどうか
-    var isDebtCommand = DEBT_COMMNAD_LIST.includes(str);
-    //借金返金コマンドかどうか
-    var isRepayCommand = REPAY_DEBT_COMMNAD_LIST.includes(str);
-  //借金コマンドかどうか
+  // 次のユーザーに移るコマンドかどうか
+  var isNextUserCommand = NEXT_USER_COMMNAD_LIST.includes(str);
+  // ダイスを振るコマンドかどうか
+  var isDiceCommand = DICE_COMMNAD_LIST.includes(str);
+  // リセットするかどうか
+  var isResetCommand = RESET_COMMNAD_LIST.includes(str);
+  // ステータス確認するかどうか
+  var isStatusCommand = STATUS_COMMNAD_LIST.includes(str);
+  // ゲームを新たに開始するかどうか
+  var isStartCommand = START_COMMNAD_LIST.includes(str);
+  // 文章を送るコマンドかどうか
+  var isNextCommand = NEXT_COMMNAD_LIST.includes(str);
+  // ヘルプコマンドかどうか
+  var isHelpCommand = HELP_COMMNAD_LIST.includes(str);
+  // 借金コマンドかどうか
+  var isDebtCommand = DEBT_COMMNAD_LIST.includes(str);
+  // 借金返済コマンドかどうか
+  var isRepayCommand = REPAY_DEBT_COMMNAD_LIST.includes(str);
+  // はいコマンドかどうか
   var isYesCommand = YES_COMMNAD_LIST.includes(str);
-  //借金返金コマンドかどうか
+  // いいえコマンドかどうか
   var isNoCommand = NO_COMMNAD_LIST.includes(str);
 
   // 最後に円があったりなかったり
@@ -122,21 +128,21 @@ function commandParser(str: string): CommandObj{
     id = Number(str.match(idPattern));
   }
 
-
-    //返すもの
-    var isCommand: CommandObj = {
-      isStart: isStartCommand,
-      isHelp: isHelpCommand,
-      isReset: isResetCommand,
-      isNext: isNextCommand,
-      isDice: isDiceCommand,
-      isStatus: isStatusCommand,
-      isDebt: isDebtCommand,
-      isRepay: isRepayCommand,
-      isYes: isYesCommand,
-      isNo: isNoCommand,
-      value: value,
-      id: id
-    };
-    return isCommand;
+  //返すもの
+  var isCommand: CommandObj = {
+    isNextUser: isNextUserCommand,
+    isStart: isStartCommand,
+    isHelp: isHelpCommand,
+    isReset: isResetCommand,
+    isNext: isNextCommand,
+    isDice: isDiceCommand,
+    isStatus: isStatusCommand,
+    isDebt: isDebtCommand,
+    isRepay: isRepayCommand,
+    isYes: isYesCommand,
+    isNo: isNoCommand,
+    value: value,
+    id: id
+  };
+  return isCommand;
 }

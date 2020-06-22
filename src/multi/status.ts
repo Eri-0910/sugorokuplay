@@ -1,9 +1,10 @@
-function statusAction(userId: string):Object[]{
+function statusAction(groupId: string, nowUserNum: number):Object[]{
     //ユーザーのシートを手に入れる
-    var SpreadSheet = getSpreadSheet(userId);
+    var SpreadSheet = getSpreadSheet(groupId);
     // ユーザーのシートを取得
     var personSheet = SpreadSheet.getSheetByName(PERSONAL_DATA_SHEET_NAME);
-    var readDatas = personSheet.getRange(2,2,11,2).getValues();
+    var nmReadRows: number = IN_LIFE_INSURANCE_ROW - MONEY_ROW + 1;
+    var readDatas = personSheet.getRange(MONEY_ROW, nowUserNum + 1, nmReadRows, 1).getValues();// B3:B13
     //金額
     var nowMoney: string = readDatas[0][0] + '円';
     //借金額
@@ -283,25 +284,25 @@ function statusAction(userId: string):Object[]{
 
 /**
  * ゴールしているかどうか
- * @param userId ユーザーID
+ * @param groupId グループID
  */
-function isGoaled(userId:string) {
+function isGoaled(groupId: string, userNum: number) {
     //ユーザーのシートを手に入れる
-    var SpreadSheet = getSpreadSheet(userId);
+    var SpreadSheet = getSpreadSheet(groupId);
     // ユーザーのシートを取得
     var personSheet = SpreadSheet.getSheetByName(PERSONAL_DATA_SHEET_NAME);
-    var readData:boolean = personSheet.getRange(IS_GOALED_RANGE).getValue();
+    var readData: boolean = personSheet.getRange(IS_GOALED_ROW, userNum + 1).getValue();
     return readData;
 }
 
 /**
  * ゴール済みとマークする
- * @param userId ユーザーID
+ * @param groupId グループID
  */
-function setGoaled(userId: string) {
+function setGoaled(groupId: string, userNum: number) {
     //ユーザーのシートを手に入れる
-    var SpreadSheet = getSpreadSheet(userId);
+    var SpreadSheet = getSpreadSheet(groupId);
     // ユーザーのシートを取得
     var personSheet = SpreadSheet.getSheetByName(PERSONAL_DATA_SHEET_NAME);
-    personSheet.getRange(IS_GOALED_RANGE).setValue(1);
+    personSheet.getRange(IS_GOALED_ROW, userNum + 1).setValue(1);
 }

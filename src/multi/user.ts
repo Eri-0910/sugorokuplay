@@ -3,13 +3,13 @@
  * @param userId ユーザーID
  * @return 動けるならTrue
  */
-function canMove(userId:string):boolean {
+function canMove(groupId: string, userNum: number):boolean {
 　//ユーザーのシートを手に入れる
-  var SpreadSheet = getSpreadSheet(userId);
+  var SpreadSheet = getSpreadSheet(groupId);
   // これでフラグの載っているのシートを取得
   var userSheet = SpreadSheet.getSheetByName(PERSONAL_DATA_SHEET_NAME);
   // 確認
-  var canMove = userSheet.getRange(IS_MOVABLE_RANGE).getValue();
+  var canMove = userSheet.getRange(IS_MOVABLE_ROW, userNum + 1).getValue();
 
   return canMove;
 }
@@ -19,11 +19,11 @@ function canMove(userId:string):boolean {
  * @param userId ユーザーID
  * @param canMove 動けるならTrue
  */
-function setMovable(userId:string, canMove: boolean) {
+function setMovable(groupId: string, userNum: number,  canMove: boolean) {
 　//ユーザーのシートを手に入れる
-  var SpreadSheet = getSpreadSheet(userId);
+  var SpreadSheet = getSpreadSheet(groupId);
   // これでフラグの載っているのシートを取得
   var userSheet = SpreadSheet.getSheetByName(PERSONAL_DATA_SHEET_NAME);
   // セット
-  userSheet.getRange(IS_MOVABLE_RANGE).setValue(Number(canMove));
+  userSheet.getRange(IS_MOVABLE_ROW, userNum + 1).setValue(Number(canMove));
 }

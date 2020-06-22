@@ -1,19 +1,19 @@
 /**
  * コマを動かし、指示を見るべきマスのリストを返す
- * @param userId ユーザーID
+ * @param groupId グループID
  * @param num サイコロの目
  * @return Space型のマスのリスト
  */
-function movePiece(userId: string, num: number): Space[] {
+function movePiece(groupId: string, userNum: number, num: number): Space[] {
     //ユーザーのシートを手に入れる
-    var SpreadSheet = getSpreadSheet(userId);
+    var SpreadSheet = getSpreadSheet(groupId);
     // 個人のシートを取得
     var personalDataSheet = SpreadSheet.getSheetByName(PERSONAL_DATA_SHEET_NAME);
 
     // 現在位置を取得
-    var startPlace: number = personalDataSheet.getRange(NOW_PLACE_RANGE).getValue();
+    var startPlace: number = personalDataSheet.getRange(NOW_PLACE_ROW, userNum + 1).getValue();
 
-    var spaceList = getSpaceRange(userId, startPlace+1, num);
+    var spaceList = getSpaceRange(groupId, startPlace+1, num);
 
     var returnSpaceList: Space[] = [];
 
@@ -21,7 +21,7 @@ function movePiece(userId: string, num: number): Space[] {
     for (let i = 1; i <= num; i++) {
         var space: Space = spaceList[i-1];
         if (i == num || space.isMustStop){//最後のマスorストップマスならそこで終わる
-            personalDataSheet.getRange(NOW_PLACE_RANGE).setValue(startPlace + i);
+            personalDataSheet.getRange(NOW_PLACE_ROW, userNum + 1).setValue(startPlace + i);
             returnSpaceList.push(space);
             break;
         } else if (space.isThroughAction) {//通過指示マスなら追加して先を見る
@@ -33,34 +33,34 @@ function movePiece(userId: string, num: number): Space[] {
 
 /**
  * コマを指定の位置へ動かし、指示を見るべきマスを返す
- * @param userId ユーザーID
+ * @param groupId グループID
  * @param spaceId 移動先
  * @return Space型のマス
  */
-function movePieceTo(userId: string, spaceId: number): Space {
+function movePieceTo(groupId: string, userNum: number, spaceId: number): Space {
     //ユーザーのシートを手に入れる
-    var SpreadSheet = getSpreadSheet(userId);
+    var SpreadSheet = getSpreadSheet(groupId);
     // 個人のシートを取得
     var personalDataSheet = SpreadSheet.getSheetByName(PERSONAL_DATA_SHEET_NAME);
 
     // 駒の位置を更新
-    personalDataSheet.getRange(NOW_PLACE_RANGE).setValue(spaceId);
+    personalDataSheet.getRange(NOW_PLACE_ROW, userNum + 1).setValue(spaceId);
     // 返す
-    var space: Space = getSpace(userId, spaceId);
+    var space: Space = getSpace(groupId, spaceId);
 
     return space;
 }
 
 /**
  * 開始点から指定された数ののマスのデータを取得しリストを返す
- * @param userId ユーザーID
+ * @param groupId グループID
  * @param spaceId 開始点となるマスのID
  * @param num 取得したいマスの数
  */
-function getSpaceRange(userId: string, spaceId: number, num: number): Space[] {
+function getSpaceRange(groupId: string, spaceId: number, num: number): Space[] {
     var spaceList: Space[] = [];
     //ユーザーのシートを手に入れる
-    var SpreadSheet = getSpreadSheet(userId);
+    var SpreadSheet = getSpreadSheet(groupId);
     // ボードシートを取得
     var boardDataSheet = SpreadSheet.getSheetByName(BOARD_DATA_SHEET_NAME);
     var startSpaceRow = spaceId + 1;
@@ -74,11 +74,11 @@ function getSpaceRange(userId: string, spaceId: number, num: number): Space[] {
 
 /**
  * 1マスの内容を手に入れられる
- * @param userId ユーザーID
+ * @param groupId グループID
  * @param spaceId マスのID
  */
-function getSpace(userId: string, spaceId: number): Space {
-    var spaceList: Space[] = getSpaceRange(userId, spaceId, 1);
+function getSpace(groupId: string, spaceId: number): Space {
+    var spaceList: Space[] = getSpaceRange(groupId, spaceId, 1);
     return spaceList[0];
 }
 
@@ -121,11 +121,14 @@ function getSpaceByArray(spaceArray: any[]): Space {
 
 /**
  * 指示に従ってステータスを変更したり、未確認マスの保存をする
- * @param space マス
+ * @param groupId グループID
+ * @param userNum ユーザーの順番
+ * @param space スペース
+ * @param showSpaece スペースを表示するか
  */
-function SpaceAction(userId: string, space: Space, showSpaece: boolean = true): { needAction: boolean, replyMessages: Object[] } {
+function SpaceAction(groupId: string, userNum: number, space: Space, showSpaece: boolean = true): { needAction: boolean, replyMessages: Object[] } {
     if (space.id >= GOAL_PLACE_NUMBER) {//ゴール
-        setGoaled(userId);
+        setGoaled(groupId, userNum);
         return { needAction: false, replyMessages:[stringToMessage("ゴールです")]};
     }
 
@@ -133,7 +136,7 @@ function SpaceAction(userId: string, space: Space, showSpaece: boolean = true): 
     var replyMessages: Object[] = [];
 
     //ユーザーのシートを手に入れる
-    var SpreadSheet = getSpreadSheet(userId);
+    var SpreadSheet = getSpreadSheet(groupId);
     // 個人のシートを取得
     var personalDataSheet = SpreadSheet.getSheetByName(PERSONAL_DATA_SHEET_NAME);
 
@@ -149,21 +152,21 @@ function SpaceAction(userId: string, space: Space, showSpaece: boolean = true): 
     if (space.isPayDay) { //給料処理
         replyMessages.push(stringToMessage("給料日です"));
         // 職業の給料
-        var saraly: number = personalDataSheet.getRange(SARALY_RANGE).getValue();
-        var workId: number = personalDataSheet.getRange(WORK_RANGE).getValue();
-        var nowMoney: number = personalDataSheet.getRange(MONEY_RANGE).getValue();
+        var saraly: number = personalDataSheet.getRange(SARALY_ROW, userNum + 1).getValue();
+        var workId: number = personalDataSheet.getRange(WORK_ROW, userNum + 1).getValue();
+        var nowMoney: number = personalDataSheet.getRange(MONEY_ROW, userNum + 1).getValue();
 
         if (workId != 10 && workId != 9) {
-            personalDataSheet.getRange(MONEY_RANGE).setValue(nowMoney + saraly);
+            personalDataSheet.getRange(MONEY_ROW, userNum + 1).setValue(nowMoney + saraly);
         } else {
             var dice: number = Math.floor(Math.random() * 6) + 1;
             var calcuratedSaraly: number = saraly * dice;
-            personalDataSheet.getRange(MONEY_RANGE).setValue(nowMoney + calcuratedSaraly);
+            personalDataSheet.getRange(MONEY_ROW, userNum + 1).setValue(nowMoney + calcuratedSaraly);
         }
     } else if (space.canChooseWork) {//職業選択
         var workId: number = space.choosableWorkId;
         //ユーザーのシートを手に入れる
-        var SpreadSheet = getSpreadSheet(userId);
+        var SpreadSheet = getSpreadSheet(groupId);
         // 職業シートを取得
         var workDataSheet = SpreadSheet.getSheetByName(WORK_DATA_SHEET_NAME);
         // 職業の名前
@@ -171,55 +174,55 @@ function SpaceAction(userId: string, space: Space, showSpaece: boolean = true): 
         // メッセージ
         replyMessages.push(getYesNoTemplate(workName + "になることができます。この職業に就きますか？"));
         //フラグセット
-        setChooseWork(userId, true, workId);
+        setChooseWork(groupId, true, workId);
         needAction = true;
 
     } else if (space.canTakeLifeInsurance) {//生命保険
         replyMessages.push(getYesNoTemplate('生命保険に入ることができます。入りますか？'));
-        setLifeInsurance(userId, true);
+        setLifeInsurance(groupId, true);
         needAction = true;
 
     } else if (space.canBuyHouse) {//家
         replyMessages.push(stringToMessage("家を買うことができます。どの家を買いますか？買わない場合は0を、買う場合はその家の番号を入力してください。"));
-        setChooseHouse(userId, true);
+        setChooseHouse(groupId, true);
         needAction = true;
 
     } else if (space.canTakeFireInsurance) {//火災保険
         replyMessages.push(getYesNoTemplate('火災保険に入れます。入りますか？'));
-        setFireInsurance(userId, true);
+        setFireInsurance(groupId, true);
         needAction = true;
 
     } else if (space.canBuyStock) {//株
         replyMessages.push(getYesNoTemplate('株を買うことができます。買いますか？'));
         var stockValue = space.stockValue;
-        setStock(userId, true, stockValue);
+        setStock(groupId, true, stockValue);
         needAction = true;
 
     } else if (space.isMarriage) {//結婚
         //変化させる
-        personalDataSheet.getRange(HAS_PARTNER_RANGE).setValue(1);
+        personalDataSheet.getRange(HAS_PARTNER_ROW, userNum + 1).setValue(1);
 
         replyMessages.push(stringToMessage("結婚しました"));
 
     } else if (space.isBirthChild) {//出産
         //今の子供の数
-        var nowChildNum: number= personalDataSheet.getRange(CHIRD_NUM_RANGE).getValue();
+        var nowChildNum: number= personalDataSheet.getRange(CHIRD_NUM_ROW, userNum + 1).getValue();
         //変化させる
-        personalDataSheet.getRange(CHIRD_NUM_RANGE).setValue(nowChildNum + space.childNum);
+        personalDataSheet.getRange(CHIRD_NUM_ROW, userNum + 1).setValue(nowChildNum + space.childNum);
 
         replyMessages.push(stringToMessage("子供が生まれました。現在の子供の数は" + (nowChildNum + space.childNum) + "人です"));
 
     } else if (space.isGet) {//お金をもらう
         //今の所持金
-        var nowMoney: number = personalDataSheet.getRange(MONEY_RANGE).getValue();
+        var nowMoney: number = personalDataSheet.getRange(MONEY_ROW, userNum + 1).getValue();
         //変化させる
-        personalDataSheet.getRange(MONEY_RANGE).setValue(nowMoney + space.getNum);
+        personalDataSheet.getRange(MONEY_ROW, userNum + 1).setValue(nowMoney + space.getNum);
 
         replyMessages.push(stringToMessage("お金を" + space.getNum + "円手に入れました"));
 
     } else if (space.isPay) {//お金を払う
         //今の所持金、借金をまとめて読み出し
-        var readData: number[][] = personalDataSheet.getRange(2,2,3,2).getValues();
+        var readData: number[][] = personalDataSheet.getRange(MONEY_ROW, userNum + 1 , 2, 1).getValues();//B3:B4
         var nowMoney: number = readData[0][0];
         var nowDebt: number = readData[1][0];
         var newMoney: number = nowMoney - space.payNum;
@@ -235,32 +238,32 @@ function SpaceAction(userId: string, space: Space, showSpaece: boolean = true): 
             replyMessages.push(stringToMessage("金額が不足したため、" + debt + "円借金しました(現在借金" + newDebt + "円、所持金" + debtAddedMoney + "円)"));
         } else {
             //変化させる
-            personalDataSheet.getRange(MONEY_RANGE).setValue(newMoney);
+            personalDataSheet.getRange(MONEY_ROW, userNum + 1).setValue(newMoney);
             replyMessages.push(stringToMessage("お金を" + space.payNum + "円支払いました(現在" + newMoney + "円)"));
         }
 
     } else if (space.goNum) {//進む
         replyMessages.push(stringToMessage(space.goNum + "マス進みます"));
         //移動させて移動先のマスを取得
-        var newSpace: Space = movePieceTo(userId, space.id + space.goNum);
+        var newSpace: Space = movePieceTo(groupId, userNum, space.id + space.goNum);
         //移動アクションを実行
-        var afterMoveObject = SpaceAction(userId, newSpace);
+        var afterMoveObject = SpaceAction(groupId, userNum, newSpace);
         //移動した結果のメッセージを送る
         replyMessages = replyMessages.concat(afterMoveObject.replyMessages);
 
     } else if (space.backNum) {//戻る
         replyMessages.push(stringToMessage(space.backNum + "マス戻ります"));
         //移動させて移動先のマスを取得
-        var newSpace: Space = movePieceTo(userId, space.id - space.backNum);
+        var newSpace: Space = movePieceTo(groupId, userNum, space.id - space.backNum);
         //移動アクションを実行
-        var afterMoveObject = SpaceAction(userId, newSpace);
+        var afterMoveObject = SpaceAction(groupId, userNum, newSpace);
         //移動した結果のメッセージを送る
         replyMessages = replyMessages.concat(afterMoveObject.replyMessages);
 
     } else if (space.isStop) {//休み
         replyMessages.push(stringToMessage(space.stopTurn + "ターン休みです"));
         //動けない様に
-        setMovable(userId, false);
+        setMovable(groupId, userNum, false);
     }
     return { needAction: needAction, replyMessages:replyMessages};
 }
@@ -430,12 +433,12 @@ function getPlaceMessage(space: Space) {
 
 /**
  * 未処理のスペースを保存
- * @param userId ユーザーID
+ * @param groupId ユーザーID
  * @param spaceList 保存するスペース
  */
-function saveSpace(userId:string, spaceList:Space[]) {
+function saveSpace(groupId:string, spaceList:Space[]) {
     //ユーザーのシートを手に入れる
-    var SpreadSheet = getSpreadSheet(userId);
+    var SpreadSheet = getSpreadSheet(groupId);
     // ゲームデータシートを取得
     var gameDataSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
 
@@ -457,11 +460,11 @@ function saveSpace(userId:string, spaceList:Space[]) {
 
 /**
  * 保存済みのスペースを取得
- * @param userId ユーザーID
+ * @param groupId ユーザーID
  */
-function loadSpace(userId: string) {
+function loadSpace(groupId: string) {
     //ユーザーのシートを手に入れる
-    var SpreadSheet = getSpreadSheet(userId);
+    var SpreadSheet = getSpreadSheet(groupId);
     // ゲームデータシートを取得
     var gameDataSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
 

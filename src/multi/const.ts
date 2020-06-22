@@ -15,20 +15,38 @@ const HOUSE_DATA_SHEET_NAME = "家データ";
 const WORK_DATA_SHEET_NAME = "職業データ";
 
 // プレーヤーデータシート
-const NOW_PLACE_RANGE = 'B1';
-const MONEY_RANGE = 'B2';
-const DEBT_RANGE = "B3";
-const STOCK_RANGE = "B4";
-const WORK_RANGE = "B5";
-const SARALY_RANGE = "B6";
-const HAS_HOUSE_RANGE = "B7";
-const HOUSE_MONEY_RANGE = "B8";
-const HAS_PARTNER_RANGE = "B9";
-const CHIRD_NUM_RANGE = "B10";
-const IN_FIRE_INSURANCE_RANGE = "B11";
-const IN_LIFE_INSURANCE_RANGE = "B12";
-const IS_MOVABLE_RANGE = 'B13';
-const IS_GOALED_RANGE = 'B14';
+const USER_ID_RANGE = 'B1';
+const SER_ID_ROW = 1;
+const USER_NAME_RANGE = 'B2';
+const USER_NAME_ROW = 2;
+const NOW_PLACE_RANGE = 'B3';
+const NOW_PLACE_ROW = 3;
+const MONEY_RANGE = 'B4';
+const MONEY_ROW = 4;
+const DEBT_RANGE = 'B5';
+const DEBT_ROW = 5;
+const STOCK_RANGE = 'B6';
+const STOCK_ROW = 6;
+const WORK_RANGE = 'B7';
+const WORK_ROW = 7;
+const SARALY_RANGE = 'B8';
+const SARALY_ROW = 8;
+const HAS_HOUSE_RANGE = 'B9';
+const HAS_HOUSE_ROW = 9;
+const HOUSE_MONEY_RANGE = 'B10';
+const HOUSE_MONEY_ROW = 10;
+const HAS_PARTNER_RANGE = 'B11';
+const HAS_PARTNER_ROW = 11;
+const CHIRD_NUM_RANGE = 'B12';
+const CHIRD_NUM_ROW = 12;
+const IN_FIRE_INSURANCE_RANGE = 'B13';
+const IN_FIRE_INSURANCE_ROW = 13;
+const IN_LIFE_INSURANCE_RANGE = 'B14';
+const IN_LIFE_INSURANCE_ROW = 14;
+const IS_MOVABLE_RANGE = 'B15';
+const IS_MOVABLE_ROW = 15;
+const IS_GOALED_RANGE = 'B16';
+const IS_GOALED_ROW = 16;
 
 // ゲームデータ
 const NEXT_TEXT_NUM_RANGE = 'B1';
@@ -36,6 +54,7 @@ const NEXT_TEXT_COLUMN = 'D';
 const NEXT_CONTENT_NUM_RANGE = "F1";
 const NEXT_CONTENT_COLUMN = "H";
 const NOW_USER_RANGE = "J1";
+const NOW_USER_NUM_RANGE = "K1";
 const REPAY_DEBT_FLAG_RANGE = "J2";
 const BORROW_DEBT_FLAG_RANGE = "J3";
 const CHOOSE_WORK_FLAG_RANGE = "J4";
@@ -45,6 +64,11 @@ const CHOOSE_HOUSE_FLAG_RANGE = "J6";
 const FIRE_INSURANCE_FLAG_RANGE = "J7";
 const STOCK_FLAG_RANGE = "J8";
 const STOCK_VALUE_RANGE = "K8"
+const FINISH_TURN_RANGE = "J9"
+const USER_NUM_RANGE = "M1"
+const GAME_CONFIG_FLAG_RANGE = "J12"
+const USER_NUM_FLAG_RANGE = "J13"
+const USER_NAME_FLAG_RANGE = "J14"
 
 // ボードデータ
 const SPACE_ID_COLUMN = "A";
@@ -92,6 +116,7 @@ const UNIT_SARALY_COLUMN = "F";
 const UPGRADE_UNIT_SARALY_COLUMN = "G";
 
 // コマンド定義
+const NEXT_USER_COMMNAD_LIST = ['次のユーザーへ'];
 const DICE_COMMNAD_LIST = ['ダイス', 'だいす', 'dice', 'Dice'];
 const RESET_COMMNAD_LIST = ['リセット', 'りせっと', 'reset', 'Reset'];
 const STATUS_COMMNAD_LIST = ['ステータス', 'すてーたす', 'status', 'Status'];
