@@ -80,11 +80,34 @@ function beforeGameAction(userId: string, isCommand: CommandObj): Object[] {
  * @returns {Object[]} 出力すべきメッセージ
  */
 function turnAction(userId: string, isCommand: CommandObj): Object[] {
-  //返信メッセージを決める
+  // 返信メッセージを決める
   var replyMessages: Object[];
-  //フラグの確認
+
+  // ゴール後にできるのはステータス確認だけ
+  if(isGoaled(userId)){
+    if (isCommand.isStatus) {
+      //ステータスを取得
+      replyMessages = statusAction(userId);
+    } else {
+      replyMessages = [stringToMessage('ゴール済みです')]
+    }
+    return replyMessages;
+  }
+
+  // 以下ゴール前のアクション
+  // フラグの確認
   var flag: Flag = getFlag(userId);
-  if (flag.isRepayDebt) {//フラグアクション
+  if (flag.hasFinished) {// 次のユーザーに移る
+    if (isCommand.isNextUser) {
+      // ターン終了コマンドを解除
+      setFinishTurn(userId, false);
+      // 返信
+      replyMessages = [stringToMessage('次のユーザーに移ります'), getActionTemplate()];
+    } else {
+      // 返信
+      replyMessages = [stringToMessage('このターンは終了しました。次の人へ移してください。'), getNextUserTemplate()];
+    }
+  } else if (flag.isRepayDebt) {// 借金を返す
     if(isCommand.value != null){
       //借金を返す
       replyMessages = repayDebt(userId, isCommand.value);
@@ -181,14 +204,8 @@ function turnAction(userId: string, isCommand: CommandObj): Object[] {
     //ステータスを取得
     replyMessages = statusAction(userId);
   } else if (isCommand.isDice) {
-    if (canMove(userId)) {
-    　//動けるので動く
-      replyMessages = moveAction(userId);
-    } else {
-      replyMessages = [stringToMessage('このターンは休みです')];
-      //動ける様に
-      setMovable(userId, true);
-    }
+    // アクション
+    replyMessages = moveAction(userId);
   } else {
     //無効
     replyMessages = [stringToMessage('このコマンドは無効です。')];
@@ -444,6 +461,17 @@ function startChooseWork(userId: string, doAction: boolean): Object[] {
 function moveAction(userId: string): Object[] {
   //返り値
   var replyMessages: Object[];
+
+  // 移動できるかどうかの確認
+  if (!canMove(userId)) {
+    //動ける様に
+    setMovable(userId, true);
+    // ターンは終わり
+    setFinishTurn(userId, true);
+    replyMessages = [stringToMessage('このターンは休みです'), getNextUserTemplate()];
+    return replyMessages;
+  }
+
   //サイコロをふる
   var dice: number = Math.floor(Math.random() * 6) + 1;
 
@@ -495,7 +523,8 @@ function spaceListAction(userId: string, placeList: Space[], showSpace: boolean 
     }
   }
   if (!needAction && !isGoaled(userId)){
-    replyMessages.push(getActionTemplate());
+    setFinishTurn(userId, true);
+    replyMessages.push(getNextUserTemplate());
   }
   return replyMessages;
 }

@@ -45,6 +45,7 @@ const CHOOSE_HOUSE_FLAG_RANGE = "J6";
 const FIRE_INSURANCE_FLAG_RANGE = "J7";
 const STOCK_FLAG_RANGE = "J8";
 const STOCK_VALUE_RANGE = "K8"
+const FINISH_TURN_RANGE = "J9"
 
 // ボードデータ
 const SPACE_ID_COLUMN = "A";
@@ -92,6 +93,7 @@ const UNIT_SARALY_COLUMN = "F";
 const UPGRADE_UNIT_SARALY_COLUMN = "G";
 
 // コマンド定義
+const NEXT_USER_COMMNAD_LIST = ['次のユーザーへ'];
 const DICE_COMMNAD_LIST = ['ダイス', 'だいす', 'dice', 'Dice'];
 const RESET_COMMNAD_LIST = ['リセット', 'りせっと', 'reset', 'Reset'];
 const STATUS_COMMNAD_LIST = ['ステータス', 'すてーたす', 'status', 'Status'];

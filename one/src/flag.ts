@@ -6,6 +6,7 @@ interface Flag {
   isFireInsurance: boolean;
   isChooseHouse: boolean;
   isStock: boolean;
+  hasFinished: boolean;
 }
 
 /**
@@ -19,7 +20,7 @@ function getFlag(userId: string): Flag {
   // これでフラグの載っているのシートを取得
   var gameSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
   // 配列にして一気に読み出す
-  var readData: any = gameSheet.getRange(2, 10, 7, 1).getValues();
+  var readData: any = gameSheet.getRange(2, 10, 8, 1).getValues();
 
   // フラグの確認
   var flag: Flag = {
@@ -30,6 +31,7 @@ function getFlag(userId: string): Flag {
     isChooseHouse: readData[4][0],
     isFireInsurance: readData[5][0],
     isStock: readData[6][0],
+    hasFinished: readData[7][0],
   };
   return flag;
 }
@@ -63,7 +65,6 @@ function setBorrowDebt(userId: string, isBorrow: boolean) {
 }
 
 /**
- * 
  * 職業選択フラグを変更する
  * @param userId ユーザーID
  * @param isChooseWork 職業選択に入ったらtrue
@@ -138,4 +139,18 @@ function setStock(userId: string, isStock: boolean, stockValue?: number) {
   }else{
     gameSheet.getRange(STOCK_VALUE_RANGE).setValue(null);
   }
+}
+
+/**
+ * ターン終了フラグを変更する
+ * @param userId ユーザーID
+ * @param isStock ターン終了ならtrue
+ */
+function setFinishTurn(userId: string, finished: boolean) {
+  //ユーザーのシートを手に入れる
+  var SpreadSheet = getSpreadSheet(userId);
+  // これでフラグの載っているのシートを取得
+  var gameSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
+  //フラグをセット
+  gameSheet.getRange(FINISH_TURN_RANGE).setValue(Number(finished));
 }

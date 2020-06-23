@@ -102,7 +102,7 @@ function getNextUserTemplate() {
         "altText": "「次のユーザーへ」と送ってください",
         "template": {
             "type": "buttons",
-            "text": "confirm",
+            "text": "ターンを終了します",
             "actions": [
                 {
                     "type": "message",
