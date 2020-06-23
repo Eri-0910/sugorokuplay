@@ -44,7 +44,7 @@ function doPost(e) {
     makePrintLog(replyMessages.length);
     //長さの設定
     if (replyMessages.length > 5) {
-        setNextMessage(userId, replyMessages.slice(4, replyMessages.length));
+      setNextMessage(groupId, replyMessages.slice(4, replyMessages.length));
         replyMessages = replyMessages.slice(0, 4)
         replyMessages.push(getNextTemplate());
     }
