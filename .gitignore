@@ -1,3 +1,6 @@
 .DS_Store
-/src/key.ts
+/src/one/key.ts
+/src/multi/key.ts
+/**/key.ts
 node_modules
+**/.clasp.json
