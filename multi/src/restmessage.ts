@@ -1,11 +1,11 @@
 /**
  * 残っているメッセージを送れるだけ取得する
- * @param userId ユーザーID
+ * @param groupId グループID
  * @return 出力するもの
  */
-function getNextMessage(userId: string):Object[]{
+function getNextMessage(groupId: string):Object[]{
     //　ユーザーのシートを手に入れる
-    var SpreadSheet = getSpreadSheet(userId);
+    var SpreadSheet = getSpreadSheet(groupId);
     // ゲームデータのシートを取得
     var dataSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
 
@@ -39,12 +39,12 @@ function getNextMessage(userId: string):Object[]{
 
 /**
  * 次に出力するメッセージをJSONを文字列にしたもので保存
- * @param userId ユーザーID
+ * @param groupId グループID
  * @param lst 保存したいもののリスト
  */
-function setNextMessage(userId: string, lst: Object[]){
+function setNextMessage(groupId: string, lst: Object[]){
     //　ユーザーのシートを手に入れる
-    var SpreadSheet = getSpreadSheet(userId);
+    var SpreadSheet = getSpreadSheet(groupId);
     // ゲームデータのシートを取得
     var dataSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
 
@@ -65,12 +65,12 @@ function setNextMessage(userId: string, lst: Object[]){
 
 /**
  * 続きのメッセージがあるかどうか
- * @param {String} userId ユーザーID
+ * @param {String} groupId グループID
  * @return {boolean} あるかどうか
  */
-function hasNextMessage(userId: string): boolean {
+function hasNextMessage(groupId: string): boolean {
     //ユーザーのシートを手に入れる
-    var SpreadSheet = getSpreadSheet(userId);
+    var SpreadSheet = getSpreadSheet(groupId);
     // ゲーム状況のシートを取得
     var dataSheet = SpreadSheet.getSheetByName(GAME_DATA_SHEET_NAME);
     //現在の残りメッセージ数を知る
